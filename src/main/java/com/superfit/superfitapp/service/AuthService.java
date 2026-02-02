@@ -37,6 +37,14 @@ public class AuthService {
             .orElseThrow(() -> new RuntimeException("Usuário sem role"));
 
     Role role = Role.valueOf(roleStr);
+    
+    // Log de login no terminal
+    System.out.println("✅ LOGIN REALIZADO");
+    System.out.println("   Usuário: " + email);
+    System.out.println("   Role: " + role);
+    System.out.println("   Hora: " + java.time.LocalDateTime.now());
+    System.out.println("-----------------------------------");
+    
     return jwtService.generateToken(email, role);
 }
 }

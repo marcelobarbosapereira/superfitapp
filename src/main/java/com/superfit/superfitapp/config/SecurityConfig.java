@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +16,7 @@ import com.superfit.superfitapp.security.JwtAuthenticationFilter;
 
 
 @Configuration
+@EnableMethodSecurity
 public class SecurityConfig {
 
     @Autowired
@@ -40,15 +42,19 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable())
+                .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
 
                 .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
+                    .requestMatchers("/home").permitAll()
+                    .requestMatchers("/logout").permitAll()
                     .requestMatchers("/").permitAll()
-
-                    .requestMatchers("/admin/**").hasRole("ADMIN")
-                    .requestMatchers("/professor/**").hasRole("PROFESSOR")
-                    .requestMatchers("/aluno/**").hasRole("ALUNO")
+                    
+                    // Endpoints protegidos - requerem autenticação
+                    .requestMatchers("/admin/**").authenticated()
+                    .requestMatchers("/professor/**").authenticated()
+                    .requestMatchers("/aluno/**").authenticated()
 
                     .anyRequest().authenticated()
                 );

@@ -25,8 +25,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String path = request.getServletPath();
         // Skip JWT filter for auth endpoints and public endpoints
         return path.startsWith("/auth/")
-    || path.startsWith("/h2-console")
-    || path.equals("/");
+            || path.startsWith("/h2-console")
+            || path.equals("/")
+            || path.equals("/home");
     }
 
 @Override
@@ -37,41 +38,49 @@ protected void doFilterInternal(
 ) throws ServletException, IOException {
 
     try {
+        String token = null;
+
+        // Tentar obter o token do header Authorization
         String authHeader = request.getHeader("Authorization");
-
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            token = authHeader.substring(7);
+        } 
+        // Se não encontrar no header, tentar obter do cookie
+        else if (request.getCookies() != null) {
+            for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
+                if ("jwtToken".equals(cookie.getName())) {
+                    token = cookie.getValue();
+                    break;
+                }
+            }
         }
 
-        String token = authHeader.substring(7);
-        
-if (jwtService.isTokenValid(token)) {
+        if (token != null && !token.isEmpty() && jwtService.isTokenValid(token)) {
+            String email = jwtService.extractEmail(token);
+            String role = jwtService.extractRole(token);
 
-    String email = jwtService.extractEmail(token);
-    String role = jwtService.extractRole(token);
+            if (email != null && role != null &&
+                SecurityContextHolder.getContext().getAuthentication() == null) {
 
-        if (email != null && role != null &&
-            SecurityContextHolder.getContext().getAuthentication() == null) {
+                SimpleGrantedAuthority authority =
+                        new SimpleGrantedAuthority(role);
 
-            SimpleGrantedAuthority authority =
-                    new SimpleGrantedAuthority(role);
+                UsernamePasswordAuthenticationToken authentication =
+                        new UsernamePasswordAuthenticationToken(
+                                email,
+                                null,
+                                List.of(authority)
+                        );
 
-            UsernamePasswordAuthenticationToken authentication =
-                    new UsernamePasswordAuthenticationToken(
-                            email,
-                            null,
-                            List.of(authority)
-                    );
+                authentication.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
 
-            authentication.setDetails(
-                    new WebAuthenticationDetailsSource().buildDetails(request)
-            );
-
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+            }
         }
-}
     } catch (Exception e) {
+        System.err.println("Erro ao processar JWT: " + e.getMessage());
         e.printStackTrace();
     }
 

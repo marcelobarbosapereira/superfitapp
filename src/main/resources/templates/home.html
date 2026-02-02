@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - SuperFit App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .login-container {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .login-container h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+
+        .login-container p {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 14px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
+        }
+
+        .login-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .login-btn:active {
+            transform: translateY(0);
+        }
+
+        .info-box {
+            background: #f0f4ff;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #555;
+        }
+
+        .info-box strong {
+            color: #333;
+        }
+
+        .response-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .response-message.success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+            display: block;
+        }
+
+        .response-message.error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+            display: block;
+        }
+
+        .token-box {
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+            word-break: break-all;
+            font-size: 12px;
+            color: #555;
+            font-family: monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <h1>🏋️ SuperFit App</h1>
+        <p>Portal de Acesso</p>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="email">Usuário</label>
+                <input type="text" id="email" name="email" placeholder="ex: admin" required>
+            </div>
+
+            <div class="form-group">
+                <label for="password">Senha</label>
+                <input type="password" id="password" name="password" placeholder="Digite sua senha" required>
+            </div>
+
+            <button type="submit" class="login-btn">Entrar</button>
+        </form>
+
+        <div id="responseMessage" class="response-message"></div>
+
+        <div class="info-box">
+            <strong>🔐 Usuários de Teste:</strong><br>
+            <strong>Admin:</strong> admin / 12345<br>
+            <strong>Gestor:</strong> gestor / 12345
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const responseMessage = document.getElementById('responseMessage');
+
+            try {
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    // Decodificar JWT para extrair o role
+                    const token = data.token;
+                    const payload = JSON.parse(atob(token.split('.')[1]));
+                    const role = payload.role;
+
+                    // Guardar token no localStorage
+                    localStorage.setItem('jwtToken', token);
+
+                    responseMessage.className = 'response-message success';
+                    responseMessage.textContent = '✅ Login realizado com sucesso! Redirecionando...';
+
+                    // Redirecionar conforme o role
+                    if (role === 'ROLE_ADMIN') {
+                        setTimeout(() => window.location.href = '/admin', 800);
+                    } else if (role === 'ROLE_GESTOR') {
+                        setTimeout(() => window.location.href = '/gestor', 800);
+                    } else if (role === 'ROLE_PROFESSOR') {
+                        setTimeout(() => window.location.href = '/professor', 800);
+                    } else if (role === 'ROLE_ALUNO') {
+                        setTimeout(() => window.location.href = '/aluno', 800);
+                    } else {
+                        setTimeout(() => window.location.href = '/home', 800);
+                    }
+                } else {
+                    responseMessage.className = 'response-message error';
+                    responseMessage.textContent = '❌ Falha no login. Verifique usuário e senha.';
+                }
+            } catch (error) {
+                responseMessage.className = 'response-message error';
+                responseMessage.textContent = '❌ Erro ao conectar ao servidor.';
+                console.error('Erro:', error);
+            }
+        });
+    </script>
+</body>
+</html>

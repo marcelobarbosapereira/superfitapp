@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - SuperFit App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px 30px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 24px;
+        }
+
+        .navbar button {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid white;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .navbar button:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            margin-bottom: 30px;
+        }
+
+        .section h3 {
+            color: #333;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 5px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+        }
+
+        .btn-edit {
+            background: #4299e1;
+            color: white;
+            padding: 8px 15px;
+            font-size: 12px;
+        }
+
+        .btn-edit:hover {
+            background: #3182ce;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .table th {
+            background: #f5f7fa;
+            padding: 15px;
+            text-align: left;
+            color: #333;
+            font-weight: 600;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .table td {
+            padding: 15px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .table tr:hover {
+            background: #f9fafb;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .message {
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .message.success {
+            background: #c6f6d5;
+            color: #22543d;
+            border: 1px solid #9ae6b4;
+            display: block;
+        }
+
+        .message.error {
+            background: #fed7d7;
+            color: #742a2a;
+            border: 1px solid #fc8181;
+            display: block;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .empty-state p {
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .modal-header h2 {
+            color: #333;
+        }
+
+        .close-modal {
+            font-size: 28px;
+            font-weight: bold;
+            color: #999;
+            cursor: pointer;
+        }
+
+        .close-modal:hover {
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🏋️ SuperFit App - Admin</h1>
+        <button onclick="logout()">Sair</button>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h2>Bem-vindo à Dashboard de Administrador</h2>
+            <p>Gerencie gestores e usuários da plataforma</p>
+        </div>
+
+        <!-- Nova Seção: Cadastro de Gestor -->
+        <div class="section">
+            <h3>Cadastrar Novo Gestor</h3>
+            <div id="createMessage" class="message"></div>
+
+            <form id="createForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="newEmail">Email/Usuário</label>
+                        <input type="text" id="newEmail" placeholder="ex: gestor1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="newPassword">Senha</label>
+                        <input type="password" id="newPassword" placeholder="Mínimo 6 caracteres" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Cadastrar Gestor</button>
+            </form>
+        </div>
+
+        <!-- Seção: Lista de Gestores -->
+        <div class="section">
+            <h3>Gestores Cadastrados</h3>
+            <div id="listMessage" class="message"></div>
+
+            <table class="table" id="gestoresTable">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Email</th>
+                        <th>Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="gestoresBody">
+                </tbody>
+            </table>
+
+            <div id="emptyState" class="empty-state">
+                <p>Nenhum gestor cadastrado ainda</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Edição -->
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Editar Gestor</h2>
+                <span class="close-modal" onclick="closeEditModal()">&times;</span>
+            </div>
+            <div id="editMessage" class="message"></div>
+            <form id="editForm">
+                <div class="form-group">
+                    <label for="editEmail">Email</label>
+                    <input type="text" id="editEmail" required>
+                </div>
+                <div class="form-group">
+                    <label for="editPassword">Senha (deixe em branco para manter)</label>
+                    <input type="password" id="editPassword" placeholder="Opcional">
+                </div>
+                <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let editingGestorId = null;
+
+        // Interceptor global para adicionar token em requisições AJAX
+        const originalFetch = window.fetch;
+        window.fetch = function(...args) {
+            const token = localStorage.getItem('jwtToken');
+            if (token) {
+                if (!args[1]) args[1] = {};
+                if (!args[1].headers) args[1].headers = {};
+                args[1].headers['Authorization'] = `Bearer ${token}`;
+                args[1].credentials = 'include'; // Incluir cookies
+            }
+            return originalFetch.apply(this, args);
+        };
+
+        // Carregar gestores ao iniciar
+        document.addEventListener('DOMContentLoaded', loadGestores);
+
+        // Evento de cadastro
+        document.getElementById('createForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('newEmail').value;
+            const password = document.getElementById('newPassword').value;
+
+            if (password.length < 6) {
+                showMessage('createMessage', 'Senha deve ter no mínimo 6 caracteres', 'error');
+                return;
+            }
+
+            try {
+                const response = await fetch('/admin/api/gestores', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (response.ok) {
+                    showMessage('createMessage', '✅ Gestor cadastrado com sucesso!', 'success');
+                    document.getElementById('createForm').reset();
+                    loadGestores();
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    const error = await response.json();
+                    showMessage('createMessage', `❌ Erro: ${error.error || 'Email já cadastrado'}`, 'error');
+                }
+            } catch (error) {
+                showMessage('createMessage', '❌ Erro ao conectar ao servidor', 'error');
+            }
+        });
+
+        // Carregar lista de gestores
+        async function loadGestores() {
+            try {
+                const response = await fetch('/admin/api/gestores');
+                const gestores = await response.json();
+
+                const tbody = document.getElementById('gestoresBody');
+                const emptyState = document.getElementById('emptyState');
+                const table = document.getElementById('gestoresTable');
+
+                if (gestores.length === 0) {
+                    tbody.innerHTML = '';
+                    emptyState.style.display = 'block';
+                    table.style.display = 'none';
+                } else {
+                    emptyState.style.display = 'none';
+                    table.style.display = 'table';
+                    tbody.innerHTML = gestores.map(g => `
+                        <tr>
+                            <td>${g.id}</td>
+                            <td>${g.email}</td>
+                            <td>
+                                <div class="actions">
+                                    <button class="btn btn-edit" onclick="openEditModal(${g.id}, '${g.email}')">Editar</button>
+                                    <button class="btn btn-danger" onclick="deleteGestor(${g.id})">Deletar</button>
+                                </div>
+                            </td>
+                        </tr>
+                    `).join('');
+                }
+            } catch (error) {
+                showMessage('listMessage', '❌ Erro ao carregar gestores', 'error');
+            }
+        }
+
+        // Abrir modal de edição
+        function openEditModal(id, email) {
+            editingGestorId = id;
+            document.getElementById('editEmail').value = email;
+            document.getElementById('editPassword').value = '';
+            document.getElementById('editMessage').innerHTML = '';
+            document.getElementById('editModal').style.display = 'block';
+        }
+
+        // Fechar modal de edição
+        function closeEditModal() {
+            document.getElementById('editModal').style.display = 'none';
+            editingGestorId = null;
+        }
+
+        // Evento de edição
+        document.getElementById('editForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('editEmail').value;
+            const password = document.getElementById('editPassword').value;
+
+            try {
+                const response = await fetch(`/admin/api/gestores/${editingGestorId}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password: password || null })
+                });
+
+                if (response.ok) {
+                    showMessage('editMessage', '✅ Gestor atualizado com sucesso!', 'success');
+                    setTimeout(() => {
+                        closeEditModal();
+                        loadGestores();
+                    }, 1500);
+                } else {
+                    showMessage('editMessage', '❌ Erro ao atualizar gestor', 'error');
+                }
+            } catch (error) {
+                showMessage('editMessage', '❌ Erro ao conectar ao servidor', 'error');
+            }
+        });
+
+        // Deletar gestor
+        async function deleteGestor(id) {
+            if (!confirm('Tem certeza que deseja deletar este gestor?')) return;
+
+            try {
+                const response = await fetch(`/admin/api/gestores/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    showMessage('listMessage', '✅ Gestor deletado com sucesso!', 'success');
+                    loadGestores();
+                } else {
+                    showMessage('listMessage', '❌ Erro ao deletar gestor', 'error');
+                }
+            } catch (error) {
+                showMessage('listMessage', '❌ Erro ao conectar ao servidor', 'error');
+            }
+        }
+
+        // Mostrar mensagens
+        function showMessage(elementId, message, type) {
+            const element = document.getElementById(elementId);
+            element.innerHTML = message;
+            element.className = `message ${type}`;
+            setTimeout(() => {
+                element.className = 'message';
+            }, 5000);
+        }
+
+        // Logout
+        function logout() {
+            window.location.href = '/logout';
+        }
+
+        // Fechar modal ao clicar fora
+        window.onclick = function(event) {
+            const modal = document.getElementById('editModal');
+            if (event.target === modal) {
+                closeEditModal();
+            }
+        }
+    </script>
+</body>
+</html>
