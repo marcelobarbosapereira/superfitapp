@@ -127,4 +127,19 @@ public class Aluno {
     public void setUser(User user) {
         this.user = user;
     }
+
+    
+    /**
+     * Relacionamento com User (login)
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    /**
+     * Muitos alunos pertencem a um professor
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id", nullable = false)
+    private Professor professor;
 }

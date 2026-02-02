@@ -1,5 +1,7 @@
 package com.superfit.superfitapp.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -116,4 +118,23 @@ public class Professor {
     public void setUser(User user) {
         this.user = user;
     }
+
+    /**
+     * Relacionamento com User (login)
+     */
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
+
+    /**
+     * Um professor possui vários alunos
+     */
+    @OneToMany(
+            mappedBy = "professor",
+            fetch = FetchType.LAZY,
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    @JsonIgnore
+    private List<Aluno> alunos;
 }

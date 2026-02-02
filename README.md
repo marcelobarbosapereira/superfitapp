@@ -80,6 +80,11 @@ src/main/java/com/superfitapp
 
 ---
 
+## 📊 Diagrama de Classes
+
+O diagrama abaixo representa as principais entidades do sistema, bem como seus relacionamentos, incluindo autenticação, autorização e regras de negócio.
+![alt text](image.png)
+
 ## ▶️ Como Executar (Backend)
 
 1. Clone o repositório:
