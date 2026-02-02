@@ -31,5 +31,29 @@ public class InitialDataService implements CommandLineRunner {
         } else {
             System.out.println("ℹ️ Admin user already exists");
         }
+        // Create default João user with role Aluno
+        if (userRepository.findByEmail("joao@superfit.com").isEmpty()) {
+            User joao = new User(
+                    "joao@superfit.com",
+                    passwordEncoder.encode("123456"),
+                    Role.ROLE_ALUNO
+            );
+            userRepository.save(joao);
+            System.out.println("✅ User created: joao@superfit.com / 123456 (ROLE_ALUNO)");
+        } else {
+            System.out.println("ℹ️ User joao@superfit.com already exists");
+        }
+        // Create default Maria user with role Professor
+        if (userRepository.findByEmail("maria@superfit.com").isEmpty()) {
+            User maria = new User(
+                    "maria@superfit.com",
+                    passwordEncoder.encode("123456"),
+                    Role.ROLE_PROFESSOR
+            );
+            userRepository.save(maria);
+            System.out.println("✅ User created: maria@superfit.com / 123456 (ROLE_PROFESSOR)");
+        } else {
+            System.out.println("ℹ️ User maria@superfit.com already exists");
+        }
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 import java.security.Key;
 import java.util.Date;
 
+import com.superfit.superfitapp.model.Role;
+
 @Service
 public class JwtService {
 
@@ -19,13 +21,18 @@ public class JwtService {
         return Keys.hmacShaKeyFor(SECRET_KEY.getBytes());
     }
 
-    public String generateToken(String email) {
+    public String generateToken(String email, Role role) {
         return Jwts.builder()
                 .setSubject(email)
+                .claim("role", role.name())
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .signWith(getSigningKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public String extractRole(String token) {
+        return getClaims(token).get("role", String.class);
     }
 
     public String extractEmail(String token) {
