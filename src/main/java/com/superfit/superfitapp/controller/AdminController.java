@@ -2,7 +2,6 @@ package com.superfit.superfitapp.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import jakarta.validation.Valid;
 
@@ -23,7 +22,6 @@ public class AdminController {
 
     private final AdminService adminService;
 
-    @Autowired
     public AdminController(AdminService adminService) {
         this.adminService = adminService;
     }

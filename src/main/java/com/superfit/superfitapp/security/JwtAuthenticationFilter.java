@@ -10,6 +10,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 import java.util.List;
 import java.io.IOException;
@@ -21,7 +22,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private JwtService jwtService;
 
     @Override
-    protected boolean shouldNotFilter(HttpServletRequest request) {
+    protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
         // Skip JWT filter for auth endpoints and public endpoints
         return path.startsWith("/auth/")
@@ -30,12 +31,12 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             || path.equals("/home");
     }
 
-@Override
-protected void doFilterInternal(
-        HttpServletRequest request,
-        HttpServletResponse response,
-        FilterChain filterChain
-) throws ServletException, IOException {
+    @Override
+    protected void doFilterInternal(
+        @NonNull HttpServletRequest request,
+        @NonNull HttpServletResponse response,
+        @NonNull FilterChain filterChain
+    ) throws ServletException, IOException {
 
     try {
         String token = null;
@@ -84,7 +85,7 @@ protected void doFilterInternal(
         e.printStackTrace();
     }
 
-    filterChain.doFilter(request, response);
-}
+        filterChain.doFilter(request, response);
+    }
 
 }

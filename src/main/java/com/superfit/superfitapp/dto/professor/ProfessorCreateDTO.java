@@ -1,4 +1,4 @@
-package com.superfitapp.dto.professor;
+package com.superfit.superfitapp.dto.professor;
 
 import lombok.Getter;
 import lombok.Setter;

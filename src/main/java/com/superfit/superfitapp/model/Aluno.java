@@ -31,9 +31,16 @@ public class Aluno {
     @Column(name = "ativo")
     private Boolean ativo = true;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
+
+    /**
+     * Muitos alunos pertencem a um professor
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "professor_id")
+    private Professor professor;
 
     /* ===== Constructors ===== */
 
@@ -128,18 +135,11 @@ public class Aluno {
         this.user = user;
     }
 
-    
-    /**
-     * Relacionamento com User (login)
-     */
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public Professor getProfessor() {
+        return professor;
+    }
 
-    /**
-     * Muitos alunos pertencem a um professor
-     */
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "professor_id", nullable = false)
-    private Professor professor;
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
 }

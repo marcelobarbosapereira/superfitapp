@@ -10,6 +10,8 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.web.bind.annotation.*;
 import jakarta.servlet.http.HttpServletResponse;
 
+import java.util.Objects;
+
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -20,7 +22,10 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 
-        String token = authService.login(request);
+        String token = Objects.requireNonNull(
+            authService.login(request),
+            "Token não pode ser nulo"
+        );
 
         // Criar um cookie seguro com o token JWT
         ResponseCookie cookie = ResponseCookie

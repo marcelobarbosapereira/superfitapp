@@ -4,6 +4,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "professores")
 public class Professor {
@@ -30,8 +32,8 @@ public class Professor {
     @Column(name = "ativo")
     private Boolean ativo = true;
 
-    @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
     private User user;
 
     /* ===== Constructors ===== */
@@ -119,12 +121,13 @@ public class Professor {
         this.user = user;
     }
 
-    /**
-     * Relacionamento com User (login)
-     */
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    public List<Aluno> getAlunos() {
+        return alunos;
+    }
+
+    public void setAlunos(List<Aluno> alunos) {
+        this.alunos = alunos;
+    }
 
     /**
      * Um professor possui vários alunos

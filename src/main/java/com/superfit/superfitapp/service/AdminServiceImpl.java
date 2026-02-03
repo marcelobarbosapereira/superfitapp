@@ -20,6 +20,7 @@ import com.superfit.superfitapp.model.Role;
 import com.superfit.superfitapp.model.Professor;
 import com.superfit.superfitapp.model.Aluno;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AdminServiceImpl implements AdminService {
@@ -66,15 +67,17 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void excluirGestor(Long gestorId) {
+            public void excluirGestor(Long gestorId) {
 
-        User gestor = userRepository.findById(gestorId)
+                User gestor = userRepository.findById(
+                                Objects.requireNonNull(gestorId, "gestorId")
+                        )
                 .filter(u -> u.getRole() == Role.ROLE_GESTOR)
                 .orElseThrow(() ->
                         new RuntimeException("Gestor não encontrado")
                 );
 
-        userRepository.delete(gestor);
+                userRepository.delete(Objects.requireNonNull(gestor, "gestor"));
     }
 
     @Override
@@ -83,7 +86,9 @@ public class AdminServiceImpl implements AdminService {
             GestorUpdateDTO dto
     ) {
 
-        User gestor = userRepository.findById(gestorId)
+        User gestor = userRepository.findById(
+                        Objects.requireNonNull(gestorId, "gestorId")
+                )
                 .filter(u -> u.getRole() == Role.ROLE_GESTOR)
                 .orElseThrow(() ->
                         new RuntimeException("Gestor não encontrado")
@@ -97,7 +102,9 @@ public class AdminServiceImpl implements AdminService {
             );
         }
 
-        User atualizado = userRepository.save(gestor);
+        User atualizado = userRepository.save(
+                Objects.requireNonNull(gestor, "gestor")
+        );
 
         return new GestorResponseDTO(
                 atualizado.getId(),
@@ -156,17 +163,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void excluirProfessor(Long professorId) {
+            public void excluirProfessor(Long professorId) {
 
-        Professor professor = professorRepository.findById(professorId)
+                Professor professor = professorRepository.findById(
+                                Objects.requireNonNull(professorId, "professorId")
+                        )
                 .orElseThrow(() ->
                         new RuntimeException("Professor não encontrado")
                 );
 
-        if (professor.getUser() != null) {
-            userRepository.delete(professor.getUser());
+                User professorUser = professor.getUser();
+                if (professorUser != null) {
+                        userRepository.delete(professorUser);
         }
-        professorRepository.delete(professor);
+                professorRepository.delete(Objects.requireNonNull(professor, "professor"));
     }
 
     @Override
@@ -175,7 +185,9 @@ public class AdminServiceImpl implements AdminService {
             ProfessorUpdateDTO dto
     ) {
 
-        Professor professor = professorRepository.findById(professorId)
+        Professor professor = professorRepository.findById(
+                        Objects.requireNonNull(professorId, "professorId")
+                )
                 .orElseThrow(() ->
                         new RuntimeException("Professor não encontrado")
                 );
@@ -194,15 +206,18 @@ public class AdminServiceImpl implements AdminService {
         }
 
         if (dto.password() != null && !dto.password().isBlank()) {
-            if (professor.getUser() != null) {
-                professor.getUser().setPassword(
+                        User professorUser = professor.getUser();
+                        if (professorUser != null) {
+                                professorUser.setPassword(
                         passwordEncoder.encode(dto.password())
                 );
-                userRepository.save(professor.getUser());
+                                userRepository.save(professorUser);
             }
         }
 
-        Professor atualizado = professorRepository.save(professor);
+                Professor atualizado = professorRepository.save(
+                        Objects.requireNonNull(professor, "professor")
+                );
 
         return new ProfessorResponseDTO(
                 atualizado.getId(),
@@ -269,17 +284,20 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
-    public void excluirAluno(Long alunoId) {
+            public void excluirAluno(Long alunoId) {
 
-        Aluno aluno = alunoRepository.findById(alunoId)
+                Aluno aluno = alunoRepository.findById(
+                                Objects.requireNonNull(alunoId, "alunoId")
+                        )
                 .orElseThrow(() ->
                         new RuntimeException("Aluno não encontrado")
                 );
 
-        if (aluno.getUser() != null) {
-            userRepository.delete(aluno.getUser());
+                User alunoUser = aluno.getUser();
+                if (alunoUser != null) {
+                        userRepository.delete(alunoUser);
         }
-        alunoRepository.delete(aluno);
+                alunoRepository.delete(Objects.requireNonNull(aluno, "aluno"));
     }
 
     @Override
@@ -288,7 +306,9 @@ public class AdminServiceImpl implements AdminService {
             AlunoUpdateDTO dto
     ) {
 
-        Aluno aluno = alunoRepository.findById(alunoId)
+        Aluno aluno = alunoRepository.findById(
+                        Objects.requireNonNull(alunoId, "alunoId")
+                )
                 .orElseThrow(() ->
                         new RuntimeException("Aluno não encontrado")
                 );
@@ -307,15 +327,18 @@ public class AdminServiceImpl implements AdminService {
         }
 
         if (dto.password() != null && !dto.password().isBlank()) {
-            if (aluno.getUser() != null) {
-                aluno.getUser().setPassword(
+                        User alunoUser = aluno.getUser();
+                        if (alunoUser != null) {
+                                alunoUser.setPassword(
                         passwordEncoder.encode(dto.password())
                 );
-                userRepository.save(aluno.getUser());
+                                userRepository.save(alunoUser);
             }
         }
 
-        Aluno atualizado = alunoRepository.save(aluno);
+                Aluno atualizado = alunoRepository.save(
+                        Objects.requireNonNull(aluno, "aluno")
+                );
 
         return new AlunoResponseDTO(
                 atualizado.getId(),

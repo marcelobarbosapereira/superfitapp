@@ -1,9 +1,9 @@
-package com.superfitapp.controller;
+package com.superfit.superfitapp.controller;
 
-import com.superfitapp.dto.professor.ProfessorCreateDTO;
-import com.superfitapp.dto.professor.ProfessorResponseDTO;
-import com.superfitapp.dto.professor.ProfessorUpdateDTO;
-import com.superfitapp.service.ProfessorService;
+import com.superfit.superfitapp.dto.professor.ProfessorCreateDTO;
+import com.superfit.superfitapp.dto.professor.ProfessorResponseDTO;
+import com.superfit.superfitapp.dto.professor.ProfessorUpdateDTO;
+import com.superfit.superfitapp.service.ProfessorService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ProfessorController {
 
-    private final ProfessorServiceImp professorService;
+    private final ProfessorService professorService;
 
     /**
      * Criar professor
