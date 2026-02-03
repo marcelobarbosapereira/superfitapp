@@ -5,7 +5,6 @@ import com.superfit.superfitapp.dto.professor.ProfessorResponseDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorUpdateDTO;
 import com.superfit.superfitapp.model.Professor;
 import com.superfit.superfitapp.repository.ProfessorRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +13,13 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service("professorService")
-@RequiredArgsConstructor
 public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
+
+    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
+        this.professorRepository = professorRepository;
+    }
 
     /* =======================
        MÉTODOS DE SEGURANÇA

@@ -4,7 +4,6 @@ import com.superfit.superfitapp.dto.aluno.AlunoCreateDTO;
 import com.superfit.superfitapp.dto.aluno.AlunoResponseDTO;
 import com.superfit.superfitapp.dto.aluno.AlunoUpdateDTO;
 import com.superfit.superfitapp.service.AlunoService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/alunos")
-@RequiredArgsConstructor
 public class AlunoController {
 
     private final AlunoService alunoService;
+
+    public AlunoController(AlunoService alunoService) {
+        this.alunoService = alunoService;
+    }
 
     /**
      * Criar aluno

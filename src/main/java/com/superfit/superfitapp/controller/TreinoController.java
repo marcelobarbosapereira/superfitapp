@@ -4,7 +4,6 @@ import com.superfit.superfitapp.dto.treino.TreinoCreateDTO;
 import com.superfit.superfitapp.dto.treino.TreinoResponseDTO;
 import com.superfit.superfitapp.dto.treino.TreinoUpdateDTO;
 import com.superfit.superfitapp.service.TreinoService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/treinos")
-@RequiredArgsConstructor
 public class TreinoController {
 
     private final TreinoService treinoService;
+
+    public TreinoController(TreinoService treinoService) {
+        this.treinoService = treinoService;
+    }
 
     /**
      * Criar treino

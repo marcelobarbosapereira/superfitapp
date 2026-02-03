@@ -11,7 +11,6 @@ import com.superfit.superfitapp.model.Treino;
 import com.superfit.superfitapp.repository.AlunoRepository;
 import com.superfit.superfitapp.repository.ProfessorRepository;
 import com.superfit.superfitapp.repository.TreinoRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,12 +20,17 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service("treinoService")
-@RequiredArgsConstructor
 public class TreinoServiceImpl implements TreinoService {
 
     private final TreinoRepository treinoRepository;
     private final ProfessorRepository professorRepository;
     private final AlunoRepository alunoRepository;
+
+    public TreinoServiceImpl(TreinoRepository treinoRepository, ProfessorRepository professorRepository, AlunoRepository alunoRepository) {
+        this.treinoRepository = treinoRepository;
+        this.professorRepository = professorRepository;
+        this.alunoRepository = alunoRepository;
+    }
 
     @Override
     public boolean isTreinoDoProfessor(Long treinoId) {

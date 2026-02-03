@@ -28,6 +28,12 @@ public class Aluno {
     @Column(name = "bio")
     private String bio;
 
+    @Column(name = "altura")
+    private Double altura;
+
+    @Column(name = "sexo")
+    private String sexo;
+
     @Column(name = "ativo")
     private Boolean ativo = true;
 
@@ -117,6 +123,22 @@ public class Aluno {
 
     public void setBio(String bio) {
         this.bio = bio;
+    }
+
+    public Double getAltura() {
+        return altura;
+    }
+
+    public void setAltura(Double altura) {
+        this.altura = altura;
+    }
+
+    public String getSexo() {
+        return sexo;
+    }
+
+    public void setSexo(String sexo) {
+        this.sexo = sexo;
     }
 
     public Boolean getAtivo() {

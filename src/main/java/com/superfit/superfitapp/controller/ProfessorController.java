@@ -4,7 +4,6 @@ import com.superfit.superfitapp.dto.professor.ProfessorCreateDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorResponseDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorUpdateDTO;
 import com.superfit.superfitapp.service.ProfessorService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -14,10 +13,13 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/professores")
-@RequiredArgsConstructor
 public class ProfessorController {
 
     private final ProfessorService professorService;
+
+    public ProfessorController(ProfessorService professorService) {
+        this.professorService = professorService;
+    }
 
     /**
      * Criar professor

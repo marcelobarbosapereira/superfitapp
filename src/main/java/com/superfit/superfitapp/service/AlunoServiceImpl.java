@@ -7,7 +7,6 @@ import com.superfit.superfitapp.model.Aluno;
 import com.superfit.superfitapp.model.Professor;
 import com.superfit.superfitapp.repository.AlunoRepository;
 import com.superfit.superfitapp.repository.ProfessorRepository;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
@@ -16,11 +15,15 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service("alunoService")
-@RequiredArgsConstructor
 public class AlunoServiceImpl implements AlunoService {
 
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
+
+    public AlunoServiceImpl(AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
+        this.alunoRepository = alunoRepository;
+        this.professorRepository = professorRepository;
+    }
 
     /* =======================
        SEGURANÇA
