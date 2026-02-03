@@ -11,7 +11,7 @@ public record ProfessorUpdateDTO(
 
         String telefone,
 
-        String especialidade,
+        String crefi,
 
         String password
 ) {}

@@ -5,6 +5,5 @@ public record ProfessorResponseDTO(
         String nome,
         String email,
         String telefone,
-        String especialidade,
-        Boolean ativo
+        String crefi
 ) {}

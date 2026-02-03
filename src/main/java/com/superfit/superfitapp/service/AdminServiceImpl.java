@@ -147,7 +147,7 @@ public class AdminServiceImpl implements AdminService {
                 dto.nome(),
                 dto.email(),
                 dto.telefone(),
-                dto.especialidade()
+                dto.crefi()
         );
         prof.setUser(usuarioSalvo);
         Professor salvo = professorRepository.save(prof);
@@ -157,8 +157,7 @@ public class AdminServiceImpl implements AdminService {
                 salvo.getNome(),
                 salvo.getEmail(),
                 salvo.getTelefone(),
-                salvo.getEspecialidade(),
-                salvo.getAtivo()
+                salvo.getCrefi()
         );
     }
 
@@ -201,8 +200,8 @@ public class AdminServiceImpl implements AdminService {
         if (dto.telefone() != null) {
             professor.setTelefone(dto.telefone());
         }
-        if (dto.especialidade() != null) {
-            professor.setEspecialidade(dto.especialidade());
+        if (dto.crefi() != null) {
+            professor.setCrefi(dto.crefi());
         }
 
         if (dto.password() != null && !dto.password().isBlank()) {
@@ -224,15 +223,14 @@ public class AdminServiceImpl implements AdminService {
                 atualizado.getNome(),
                 atualizado.getEmail(),
                 atualizado.getTelefone(),
-                atualizado.getEspecialidade(),
-                atualizado.getAtivo()
+                atualizado.getCrefi()
         );
     }
 
     @Override
     public List<ProfessorResponseDTO> listarProfessores() {
 
-        return professorRepository.findByAtivo(true)
+        return professorRepository.findAll()
                 .stream()
                 .map(p ->
                         new ProfessorResponseDTO(
@@ -240,8 +238,7 @@ public class AdminServiceImpl implements AdminService {
                                 p.getNome(),
                                 p.getEmail(),
                                 p.getTelefone(),
-                                p.getEspecialidade(),
-                                p.getAtivo()
+                                p.getCrefi()
                         )
                 )
                 .toList();

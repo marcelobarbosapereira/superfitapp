@@ -23,14 +23,8 @@ public class Professor {
     @Column(nullable = false)
     private String telefone;
 
-    @Column(name = "especialidade")
-    private String especialidade;
-
-    @Column(name = "bio")
-    private String bio;
-
-    @Column(name = "ativo")
-    private Boolean ativo = true;
+    @Column(name = "crefi")
+    private String crefi;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -44,15 +38,13 @@ public class Professor {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
-        this.ativo = true;
     }
 
-    public Professor(String nome, String email, String telefone, String especialidade) {
+    public Professor(String nome, String email, String telefone, String crefi) {
         this.nome = nome;
         this.email = email;
         this.telefone = telefone;
-        this.especialidade = especialidade;
-        this.ativo = true;
+        this.crefi = crefi;
     }
 
     /* ===== Getters & Setters ===== */
@@ -89,28 +81,12 @@ public class Professor {
         this.telefone = telefone;
     }
 
-    public String getEspecialidade() {
-        return especialidade;
+    public String getCrefi() {
+        return crefi;
     }
 
-    public void setEspecialidade(String especialidade) {
-        this.especialidade = especialidade;
-    }
-
-    public String getBio() {
-        return bio;
-    }
-
-    public void setBio(String bio) {
-        this.bio = bio;
-    }
-
-    public Boolean getAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(Boolean ativo) {
-        this.ativo = ativo;
+    public void setCrefi(String crefi) {
+        this.crefi = crefi;
     }
 
     public User getUser() {

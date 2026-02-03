@@ -9,5 +9,5 @@ public class ProfessorUpdateDTO {
 
     private String nome;
     private String telefone;
-    private Boolean ativo;
+    private String crefi;
 }

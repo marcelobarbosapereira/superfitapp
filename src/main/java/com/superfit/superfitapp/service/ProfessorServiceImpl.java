@@ -42,7 +42,7 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setNome(dto.getNome());
         professor.setEmail(dto.getEmail());
         professor.setTelefone(dto.getTelefone());
-        professor.setAtivo(true);
+        professor.setCrefi(dto.getCrefi());
 
         // aqui normalmente você vincula o User com role PROFESSOR
         // professor.setUser(user);
@@ -78,7 +78,7 @@ public class ProfessorServiceImpl implements ProfessorService {
 
         professor.setNome(dto.getNome());
         professor.setTelefone(dto.getTelefone());
-        professor.setAtivo(dto.getAtivo());
+        professor.setCrefi(dto.getCrefi());
 
         professor = professorRepository.save(professor);
         return toResponseDTO(professor);
@@ -98,15 +98,15 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     private ProfessorResponseDTO toResponseDTO(Professor professor) {
         String email = professor.getUser() != null
-            ? professor.getUser().getEmail()
-            : professor.getEmail();
+                ? professor.getUser().getEmail()
+                : professor.getEmail();
 
         return new ProfessorResponseDTO(
                 professor.getId(),
                 professor.getNome(),
-            email,
+                email,
                 professor.getTelefone(),
-                professor.getAtivo()
+                professor.getCrefi()
         );
     }
 }

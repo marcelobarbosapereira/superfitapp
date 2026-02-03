@@ -11,4 +11,5 @@ public class ProfessorCreateDTO {
     private String email;
     private String senha;
     private String telefone;
+    private String crefi;
 }
