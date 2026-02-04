@@ -217,11 +217,11 @@
                     }
                 } else {
                     responseMessage.className = 'response-message error';
-                    responseMessage.textContent = '❌ Falha no login. Verifique usuário e senha.';
+                    responseMessage.textContent = 'Falha no login. Verifique usuário e senha.';
                 }
             } catch (error) {
                 responseMessage.className = 'response-message error';
-                responseMessage.textContent = '❌ Erro ao conectar ao servidor.';
+                responseMessage.textContent = 'Erro ao conectar ao servidor.';
                 console.error('Erro:', error);
             }
         });

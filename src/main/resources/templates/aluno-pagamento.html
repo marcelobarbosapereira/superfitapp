@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pagamento da Mensalidade - SuperFit App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #333;
+        }
+
+        .payment-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 100%;
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .payment-header h1 {
+            color: #667eea;
+            margin-bottom: 0.5rem;
+            font-size: 28px;
+        }
+
+        .payment-header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .payment-info {
+            background: #f0f7ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            border-left: 4px solid #667eea;
+        }
+
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+            font-size: 14px;
+        }
+
+        .info-row:last-child {
+            margin-bottom: 0;
+        }
+
+        .info-label {
+            color: #666;
+        }
+
+        .info-value {
+            font-weight: 600;
+            color: #333;
+        }
+
+        .info-value.valor {
+            font-size: 24px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .divider {
+            border-top: 2px solid #e0e0e0;
+            margin: 1rem 0;
+        }
+
+        .payment-method {
+            margin-bottom: 2rem;
+        }
+
+        .payment-method h3 {
+            color: #333;
+            margin-bottom: 1rem;
+            font-size: 16px;
+        }
+
+        .payment-options {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .payment-option {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .payment-option:hover {
+            border-color: #667eea;
+            background: #f8f9ff;
+        }
+
+        .payment-option input[type="radio"] {
+            margin-right: 1rem;
+            cursor: pointer;
+            width: 20px;
+            height: 20px;
+        }
+
+        .payment-option-content {
+            flex: 1;
+        }
+
+        .payment-option-title {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 0.25rem;
+        }
+
+        .payment-option-desc {
+            font-size: 12px;
+            color: #999;
+        }
+
+        .card-form {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background: #f8f9ff;
+            border-radius: 8px;
+        }
+
+        .card-form.active {
+            display: block;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #333;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-cancel {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-cancel:hover {
+            background: #e0e0e0;
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            color: #999;
+            font-size: 12px;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .security-info svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .success-message {
+            display: none;
+            background: #d3f9d8;
+            color: #2b8a3e;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+        }
+
+        .success-message h2 {
+            margin-bottom: 0.5rem;
+        }
+
+        .error-message {
+            display: none;
+            background: #ffe0e0;
+            color: #c92a2a;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1rem;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .warning {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1.5rem;
+            font-size: 14px;
+            color: #856404;
+        }
+    </style>
+</head>
+<body>
+    <div class="payment-container">
+        <div class="payment-header">
+            <h1>💳 Pagar Mensalidade</h1>
+            <p>Escolha a forma de pagamento</p>
+        </div>
+
+        <div class="warning">
+            <strong>⚠ Aviso:</strong> Este é um sistema de pagamento fictício para demonstração. Seus dados não serão processados.
+        </div>
+
+        <div id="error-message" class="error-message"></div>
+
+        <div id="loading" class="loading">
+            <div class="spinner"></div>
+            <p>Processando pagamento...</p>
+        </div>
+
+        <div id="form-payment" style="display: block;">
+            <div class="payment-info">
+                <div class="info-row">
+                    <span class="info-label">Referência:</span>
+                    <span class="info-value" id="referencia">-</span>
+                </div>
+                <div class="divider"></div>
+                <div class="info-row">
+                    <span class="info-label">Valor a Pagar:</span>
+                    <span class="info-value valor" id="valor-display">R$ 150,00</span>
+                </div>
+            </div>
+
+            <div class="payment-method">
+                <h3>Método de Pagamento</h3>
+                <div class="payment-options">
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="cartao" checked onchange="alterarMetodo('cartao')">
+                        <div class="payment-option-content">
+                            <div class="payment-option-title">💳 Cartão de Crédito</div>
+                            <div class="payment-option-desc">Visa, Mastercard, ELO</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="pix" onchange="alterarMetodo('pix')">
+                        <div class="payment-option-content">
+                            <div class="payment-option-title">📲 PIX</div>
+                            <div class="payment-option-desc">Transferência instantânea</div>
+                        </div>
+                    </label>
+
+                    <label class="payment-option">
+                        <input type="radio" name="payment-method" value="boleto" onchange="alterarMetodo('boleto')">
+                        <div class="payment-option-content">
+                            <div class="payment-option-title">📄 Boleto Bancário</div>
+                            <div class="payment-option-desc">Vencimento em 3 dias úteis</div>
+                        </div>
+                    </label>
+                </div>
+            </div>
+
+            <div id="cartao-form" class="card-form active">
+                <div class="form-group">
+                    <label>Número do Cartão</label>
+                    <input type="text" id="card-number" placeholder="0000 0000 0000 0000" maxlength="19" onchange="formatarCartao(this)">
+                </div>
+                <div class="form-group">
+                    <label>Titular do Cartão</label>
+                    <input type="text" id="card-name" placeholder="Nome conforme no cartão" style="text-transform: uppercase;">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Validade (MM/AA)</label>
+                        <input type="text" id="card-expiry" placeholder="MM/AA" maxlength="5">
+                    </div>
+                    <div class="form-group">
+                        <label>CVV</label>
+                        <input type="text" id="card-cvv" placeholder="000" maxlength="3">
+                    </div>
+                </div>
+            </div>
+
+            <div id="pix-form" class="card-form">
+                <p style="text-align: center; color: #666; margin-bottom: 1rem;">
+                    Você será redirecionado para realizar o pagamento via PIX.
+                </p>
+                <div style="background: #f8f8f8; padding: 1rem; border-radius: 5px; text-align: center;">
+                    <code style="word-break: break-all;">00020126580014br.gov.bcb.pix0136xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx520400005303986540510.005802BR5913SUPERFIT APP6009SAO PAULO62410503***63047D5A</code>
+                </div>
+            </div>
+
+            <div id="boleto-form" class="card-form">
+                <p style="text-align: center; color: #666; margin-bottom: 1rem;">
+                    Seu boleto será gerado após a confirmação do pagamento.
+                </p>
+                <div style="background: #f8f8f8; padding: 1rem; border-radius: 5px; text-align: center;">
+                    <code style="word-break: break-all;">33790.79001 01290.510047 91018.110008 1 99999999999999</code>
+                </div>
+            </div>
+
+            <div class="payment-buttons">
+                <button class="btn btn-cancel" onclick="cancelarPagamento()">Cancelar</button>
+                <button class="btn btn-confirm" id="btn-confirm" onclick="confirmarPagamento()">Pagar Agora</button>
+            </div>
+
+            <div class="security-info">
+                🔒 Pagamento seguro com criptografia SSL
+            </div>
+        </div>
+
+        <div id="success-message" class="success-message">
+            <h2>✓ Pagamento Realizado com Sucesso!</h2>
+            <p>Sua mensalidade foi marcada como paga.</p>
+            <p style="margin-top: 1rem;">
+                <a href="/aluno/mensalidades" style="color: #2b8a3e; text-decoration: none; font-weight: 600;">
+                    ← Voltar para mensalidades
+                </a>
+            </p>
+        </div>
+    </div>
+
+    <script th:inline="javascript">
+        /*<![CDATA[*/
+        let mensalidadeId = /*[[${mensalidadeId}]]*/ '1';
+        let valor = /*[[${valor}]]*/ 150.00;
+        let metodoPagamento = 'cartao';
+        /*]]>*/
+
+        function formatarCartao(input) {
+            let value = input.value.replace(/\s/g, '');
+            let formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+            input.value = formatted;
+        }
+
+        function alterarMetodo(metodo) {
+            metodoPagamento = metodo;
+            document.querySelectorAll('.card-form').forEach(form => form.classList.remove('active'));
+            document.getElementById(metodo + '-form').classList.add('active');
+        }
+
+        function carregarDadosMensalidade() {
+            fetch('/api/mensalidades/' + mensalidadeId)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('referencia').textContent = data.mesReferencia + '/' + data.anoReferencia;
+                    document.getElementById('valor-display').textContent = 'R$ ' + formatarValor(data.valor);
+                    valor = data.valor;
+                })
+                .catch(err => {
+                    console.log('Usando dados padrão');
+                });
+        }
+
+        function confirmarPagamento() {
+            const btnConfirm = document.getElementById('btn-confirm');
+            const loading = document.getElementById('loading');
+            const formPayment = document.getElementById('form-payment');
+            const successMessage = document.getElementById('success-message');
+            const errorMessage = document.getElementById('error-message');
+
+            // Validações básicas
+            if (metodoPagamento === 'cartao') {
+                const cardNumber = document.getElementById('card-number').value.replace(/\s/g, '');
+                const cardName = document.getElementById('card-name').value.trim();
+                const cardExpiry = document.getElementById('card-expiry').value;
+                const cardCvv = document.getElementById('card-cvv').value;
+
+                if (!cardNumber || cardNumber.length < 13) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Número do cartão inválido.';
+                    return;
+                }
+                if (!cardName) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Nome do titular é obrigatório.';
+                    return;
+                }
+                if (!cardExpiry || !cardExpiry.match(/^\d{2}\/\d{2}$/)) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Validade inválida (use MM/AA).';
+                    return;
+                }
+                if (!cardCvv || cardCvv.length < 3) {
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'CVV inválido.';
+                    return;
+                }
+            }
+
+            // Simular processamento
+            btnConfirm.disabled = true;
+            loading.style.display = 'block';
+            errorMessage.style.display = 'none';
+
+            setTimeout(() => {
+                // Marcar mensalidade como paga via API
+                fetch('/api/mensalidades/' + mensalidadeId + '/pagar', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao processar pagamento');
+                    
+                    loading.style.display = 'none';
+                    formPayment.style.display = 'none';
+                    successMessage.style.display = 'block';
+                })
+                .catch(err => {
+                    btnConfirm.disabled = false;
+                    loading.style.display = 'none';
+                    errorMessage.style.display = 'block';
+                    errorMessage.textContent = 'Erro ao processar pagamento. Tente novamente.';
+                });
+            }, 2000);
+        }
+
+        function cancelarPagamento() {
+            window.location.href = '/aluno/mensalidades';
+        }
+
+        function formatarValor(valor) {
+            return valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Carregar dados ao iniciar
+        carregarDadosMensalidade();
+    </script>
+</body>
+</html>

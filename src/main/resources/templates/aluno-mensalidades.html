@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Mensalidades - SuperFit App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f5f5;
+            color: #333;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1rem 2rem;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar h1 {
+            display: inline-block;
+            font-size: 24px;
+        }
+
+        .navbar .user-menu {
+            float: right;
+            margin-top: 0.5rem;
+        }
+
+        .navbar a {
+            color: white;
+            margin-left: 2rem;
+            text-decoration: none;
+            transition: opacity 0.3s;
+        }
+
+        .navbar a:hover {
+            opacity: 0.8;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 0.5rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .logout-btn:hover {
+            background: #ff5252;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .card h2 {
+            margin-bottom: 1.5rem;
+            color: #667eea;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 0.5rem;
+        }
+
+        .filter-bar {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .filter-btn {
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #667eea;
+            background: white;
+            color: #667eea;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: 600;
+        }
+
+        .filter-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .filter-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .message {
+            text-align: center;
+            padding: 2rem;
+            color: #666;
+            font-size: 16px;
+        }
+
+        .mensalidade-item {
+            background: #f9f9f9;
+            border-left: 4px solid #667eea;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .mensalidade-item.paga {
+            border-left-color: #51cf66;
+        }
+
+        .mensalidade-item.pendente {
+            border-left-color: #ff6b6b;
+        }
+
+        .mensalidade-info {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .mensalidade-info h3 {
+            margin-bottom: 0.5rem;
+            color: #333;
+        }
+
+        .mensalidade-info p {
+            margin: 0.25rem 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .mensalidade-details {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+            font-size: 14px;
+        }
+
+        .detail-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-label {
+            color: #999;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .detail-value {
+            font-weight: 600;
+            color: #333;
+            margin-top: 0.25rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 12px;
+            text-transform: uppercase;
+        }
+
+        .status-badge.paga {
+            background: #d3f9d8;
+            color: #2b8a3e;
+        }
+
+        .status-badge.pendente {
+            background: #ffe0e0;
+            color: #c92a2a;
+        }
+
+        .valor {
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .actions {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 14px;
+        }
+
+        .btn-pagar {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-pagar:hover {
+            background: #5568d3;
+        }
+
+        .btn-pagar:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .btn-detalhes {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-detalhes:hover {
+            background: #e0e0e0;
+        }
+
+        .summary {
+            background: #f0f7ff;
+            padding: 1.5rem;
+            border-radius: 10px;
+            margin-bottom: 2rem;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+
+        .summary-item {
+            text-align: center;
+        }
+
+        .summary-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+        }
+
+        .summary-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .summary-value.total-pagar {
+            color: #ff6b6b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error-message {
+            background: #ffe0e0;
+            color: #c92a2a;
+            padding: 1rem;
+            border-radius: 5px;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1>🏋️ SuperFit App</h1>
+        <div class="user-menu">
+            <a href="/aluno/dashboard">Home</a>
+            <a href="/logout" class="logout-btn">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2>Minhas Mensalidades</h2>
+
+            <div class="summary" id="summary" style="display: none;">
+                <div class="summary-item">
+                    <div class="summary-label">Total Pago</div>
+                    <div class="summary-value" id="totalPago">R$ 0,00</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Total a Pagar</div>
+                    <div class="summary-value total-pagar" id="totalPendente">R$ 0,00</div>
+                </div>
+                <div class="summary-item">
+                    <div class="summary-label">Total</div>
+                    <div class="summary-value" id="totalGeral">R$ 0,00</div>
+                </div>
+            </div>
+
+            <div class="filter-bar">
+                <button class="filter-btn active" onclick="filtrarMensalidades('todas')">Todas</button>
+                <button class="filter-btn" onclick="filtrarMensalidades('PAGA')">Pagas</button>
+                <button class="filter-btn" onclick="filtrarMensalidades('PENDENTE')">Pendentes</button>
+            </div>
+
+            <div id="error" class="error-message" style="display: none;"></div>
+            <div id="loading" class="loading" style="display: none;">
+                <div class="spinner"></div>
+                <p>Carregando mensalidades...</p>
+            </div>
+
+            <div id="mensalidades-container">
+                <div class="message">Nenhuma mensalidade encontrada.</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let mensalidadesCache = [];
+        let alunoId = localStorage.getItem('alunoId');
+
+        function obterAlunoId() {
+            // Tentar obter do localStorage
+            let id = localStorage.getItem('alunoId');
+            if (id) return id;
+
+            // Se não tiver, tentar extrair da resposta do servidor (assumir que é 1 para teste)
+            return '1';
+        }
+
+        function carregarMensalidades() {
+            const loading = document.getElementById('loading');
+            const container = document.getElementById('mensalidades-container');
+            const error = document.getElementById('error');
+
+            loading.style.display = 'block';
+            error.style.display = 'none';
+            container.innerHTML = '';
+
+            alunoId = obterAlunoId();
+
+            fetch('/api/mensalidades/aluno/' + alunoId)
+                .then(response => {
+                    if (!response.ok) throw new Error('Erro ao carregar mensalidades');
+                    return response.json();
+                })
+                .then(data => {
+                    mensalidadesCache = data;
+                    loading.style.display = 'none';
+                    atualizarResumo();
+                    exibirMensalidades(mensalidadesCache);
+                })
+                .catch(err => {
+                    loading.style.display = 'none';
+                    error.style.display = 'block';
+                    error.textContent = 'Erro ao carregar mensalidades. Tente novamente.';
+                    container.innerHTML = '<div class="message">Erro ao carregar dados.</div>';
+                });
+        }
+
+        function exibirMensalidades(mensalidades) {
+            const container = document.getElementById('mensalidades-container');
+
+            if (mensalidades.length === 0) {
+                container.innerHTML = '<div class="message">Nenhuma mensalidade encontrada.</div>';
+                return;
+            }
+
+            container.innerHTML = mensalidades.map(m => `
+                <div class="mensalidade-item ${m.status.toLowerCase()}">
+                    <div class="mensalidade-info">
+                        <h3>${m.mesReferencia}/${m.anoReferencia}</h3>
+                        <div class="mensalidade-details">
+                            <div class="detail-item">
+                                <span class="detail-label">Vencimento</span>
+                                <span class="detail-value">${formatarData(m.dataVencimento)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Valor</span>
+                                <span class="detail-value valor">R$ ${formatarValor(m.valor)}</span>
+                            </div>
+                            <div class="detail-item">
+                                <span class="detail-label">Status</span>
+                                <span class="status-badge ${m.status.toLowerCase()}">${m.status === 'PAGA' ? '✓ Paga' : '⚠ Pendente'}</span>
+                            </div>
+                            ${m.dataPagamento ? `
+                            <div class="detail-item">
+                                <span class="detail-label">Pago em</span>
+                                <span class="detail-value">${formatarData(m.dataPagamento)}</span>
+                            </div>
+                            ` : ''}
+                        </div>
+                    </div>
+                    <div class="actions">
+                        ${m.status === 'PENDENTE' ? `
+                            <a href="/aluno/pagamento/${m.id}" class="btn btn-pagar">💳 Pagar Agora</a>
+                        ` : ''}
+                        <button class="btn btn-detalhes" onclick="exibirDetalhes(${m.id})">Detalhes</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        function filtrarMensalidades(status) {
+            // Atualizar botões ativos
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+
+            let filtradas = mensalidadesCache;
+            if (status !== 'todas') {
+                filtradas = mensalidadesCache.filter(m => m.status === status);
+            }
+
+            exibirMensalidades(filtradas);
+        }
+
+        function atualizarResumo() {
+            const totalPago = mensalidadesCache
+                .filter(m => m.status === 'PAGA')
+                .reduce((sum, m) => sum + m.valor, 0);
+
+            const totalPendente = mensalidadesCache
+                .filter(m => m.status === 'PENDENTE')
+                .reduce((sum, m) => sum + m.valor, 0);
+
+            const total = totalPago + totalPendente;
+
+            document.getElementById('summary').style.display = 'grid';
+            document.getElementById('totalPago').textContent = 'R$ ' + formatarValor(totalPago);
+            document.getElementById('totalPendente').textContent = 'R$ ' + formatarValor(totalPendente);
+            document.getElementById('totalGeral').textContent = 'R$ ' + formatarValor(total);
+        }
+
+        function exibirDetalhes(id) {
+            const msg = mensalidadesCache.find(m => m.id === id);
+            if (msg) {
+                alert(`
+Mensalidade: ${msg.mesReferencia}/${msg.anoReferencia}
+Valor: R$ ${formatarValor(msg.valor)}
+Status: ${msg.status === 'PAGA' ? 'Paga' : 'Pendente'}
+Vencimento: ${formatarData(msg.dataVencimento)}
+Criada em: ${formatarData(msg.dataCriacao)}
+${msg.observacoes ? 'Observações: ' + msg.observacoes : ''}
+                `);
+            }
+        }
+
+        function formatarData(data) {
+            const d = new Date(data);
+            return d.toLocaleDateString('pt-BR');
+        }
+
+        function formatarValor(valor) {
+            return valor.toFixed(2).replace('.', ',').replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+        }
+
+        // Carregar mensalidades ao iniciar
+        carregarMensalidades();
+
+        // Recarregar a cada 30 segundos (opcional)
+        // setInterval(carregarMensalidades, 30000);
+    </script>
+</body>
+</html>
