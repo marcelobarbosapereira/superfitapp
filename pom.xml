@@ -69,6 +69,13 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- Spring Security Test -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+
 			<!-- JWT -->
 		<dependency>
 			<groupId>io.jsonwebtoken</groupId>
@@ -97,6 +104,7 @@
 
 
 	<build>
+		<testSourceDirectory>${project.basedir}/test</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
