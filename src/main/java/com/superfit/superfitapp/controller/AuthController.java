@@ -12,6 +12,10 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import java.util.Objects;
 
+/**
+ * Controller REST para autenticação de usuários.
+ * Expõe endpoint de login que gera token JWT e define cookie seguro.
+ */
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
@@ -19,6 +23,25 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    /**
+     * Endpoint de autenticação de usuários.
+     * 
+     * Lógica:
+     * 1. Autentica usuário via AuthService (valida credenciais e gera JWT)
+     * 2. Cria um cookie HttpOnly com o token para segurança adicional
+     * 3. Adiciona o cookie ao response header
+     * 4. Retorna o token no corpo da resposta
+     * 
+     * Configurações do cookie:
+     * - httpOnly: true (não acessível via JavaScript)
+     * - secure: false (mudar para true em produção com HTTPS)
+     * - maxAge: 24 horas
+     * - sameSite: Lax (proteção contra CSRF)
+     * 
+     * @param request DTO com email e password
+     * @param response HttpServletResponse para adicionar cookie
+     * @return ResponseEntity com token JWT no corpo
+     */
     @PostMapping("/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request, HttpServletResponse response) {
 

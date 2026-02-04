@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de Alunos.
+ * Expõe endpoints para CRUD de alunos com controle de acesso baseado em roles.
+ * 
+ * Regras de acesso:
+ * - ADMIN/GESTOR: acesso total a todos os alunos
+ * - PROFESSOR: acesso apenas aos seus próprios alunos
+ * - ALUNO: acesso apenas aos próprios dados
+ */
 @RestController
 @RequestMapping("/api/alunos")
 public class AlunoController {
@@ -22,8 +31,15 @@ public class AlunoController {
     }
 
     /**
-     * Criar aluno
-     * Acesso: ADMIN / GESTOR / PROFESSOR
+     * Cria um novo aluno no sistema.
+     * Acesso: ADMIN, GESTOR ou PROFESSOR.
+     * 
+     * Lógica:
+     * - Valida e cria o aluno vinculando-o a um professor
+     * - Define o aluno como ativo por padrão
+     * 
+     * @param dto Dados do aluno (nome, email, telefone, professorId)
+     * @return ResponseEntity com status 201 e dados do aluno criado
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR','PROFESSOR')")
@@ -35,9 +51,14 @@ public class AlunoController {
     }
 
     /**
-     * Listar alunos
-     * ADMIN / GESTOR → todos
-     * PROFESSOR → apenas seus alunos
+     * Lista alunos de acordo com a role do usuário.
+     * Acesso: ADMIN, GESTOR ou PROFESSOR.
+     * 
+     * Lógica:
+     * - ADMIN/GESTOR: retorna todos os alunos
+     * - PROFESSOR: retorna apenas seus alunos (filtro aplicado no service)
+     * 
+     * @return ResponseEntity com lista de alunos
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR','PROFESSOR')")
@@ -46,7 +67,14 @@ public class AlunoController {
     }
 
     /**
-     * Buscar aluno por ID
+     * Busca um aluno específico por ID.
+     * Acesso com validações de permissão:
+     * - ADMIN/GESTOR: podem buscar qualquer aluno
+     * - PROFESSOR: pode buscar apenas seus alunos (valida via @alunoService.isAlunoDoProfessor)
+     * - ALUNO: pode buscar apenas seus próprios dados (valida via @alunoService.isAlunoDoToken)
+     * 
+     * @param id ID do aluno
+     * @return ResponseEntity com dados do aluno
      */
     @GetMapping("/{id}")
     @PreAuthorize("""
@@ -59,7 +87,15 @@ public class AlunoController {
     }
 
     /**
-     * Atualizar aluno
+     * Atualiza os dados de um aluno existente.
+     * Acesso com validações de permissão:
+     * - ADMIN/GESTOR: podem atualizar qualquer aluno
+     * - PROFESSOR: pode atualizar apenas seus alunos
+     * - ALUNO: pode atualizar apenas seus próprios dados
+     * 
+     * @param id ID do aluno a ser atualizado
+     * @param dto Novos dados (nome, telefone, ativo)
+     * @return ResponseEntity com dados atualizados
      */
     @PutMapping("/{id}")
     @PreAuthorize("""
@@ -75,8 +111,11 @@ public class AlunoController {
     }
 
     /**
-     * Remover aluno
-     * ADMIN / GESTOR
+     * Remove um aluno do sistema.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * 
+     * @param id ID do aluno a ser removido
+     * @return ResponseEntity com status 204 (No Content)
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")

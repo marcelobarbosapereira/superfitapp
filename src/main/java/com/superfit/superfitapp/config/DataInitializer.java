@@ -9,6 +9,18 @@ import com.superfit.superfitapp.model.Role;
 import com.superfit.superfitapp.model.User;
 import com.superfit.superfitapp.repository.UserRepository;
 
+/**
+ * Inicializador de dados padrão do sistema.
+ * Executa automaticamente na inicialização da aplicação (CommandLineRunner).
+ * 
+ * Responsabilidades:
+ * - Criar usuário ADMIN padrão (email: admin, senha: 12345)
+ * - Criar usuário GESTOR padrão (email: gestor, senha: 12345)
+ * - Verificar existência antes de criar para evitar duplicação
+ * - Logar informações de criação no console
+ * 
+ * Nota: Em produção, considere remover ou alterar senhas padrão.
+ */
 @Component
 public class DataInitializer implements CommandLineRunner {
 
@@ -18,6 +30,13 @@ public class DataInitializer implements CommandLineRunner {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
+    /**
+     * Método executado automaticamente após a inicialização da aplicação.
+     * Cria usuários padrão se não existirem no banco de dados.
+     * 
+     * @param args Argumentos da linha de comando (não utilizados)
+     * @throws Exception em caso de erro na inicialização
+     */
     @Override
     public void run(String... args) throws Exception {
         System.out.println("\n========================================");
@@ -35,6 +54,11 @@ public class DataInitializer implements CommandLineRunner {
         System.out.println("========================================\n");
     }
     
+    /**
+     * Cria o usuário ADMIN padrão se não existir.
+     * Credenciais: email="admin", senha="12345", role=ROLE_ADMIN.
+     * Senha é codificada com BCrypt antes de persistir.
+     */
     private void criarAdminSeNaoExistir() {
         if (!userRepository.existsByEmail("admin")) {
             User adminUser = new User(
@@ -50,6 +74,11 @@ public class DataInitializer implements CommandLineRunner {
         }
     }
     
+    /**
+     * Cria o usuário GESTOR padrão se não existir.
+     * Credenciais: email="gestor", senha="12345", role=ROLE_GESTOR.
+     * Senha é codificada com BCrypt antes de persistir.
+     */
     private void criarGestorSeNaoExistir() {
         if (!userRepository.existsByEmail("gestor")) {
             User gestorUser = new User(

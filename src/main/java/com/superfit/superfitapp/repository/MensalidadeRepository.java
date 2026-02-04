@@ -8,6 +8,20 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+/**
+ * Repositório JPA para a entidade Mensalidade.
+ * Fornece operações CRUD e queries customizadas para consultas de mensalidades.
+ * 
+ * Queries customizadas:
+ * - findByAlunoId: Lista mensalidades de um aluno
+ * - findByAlunoIdAndStatus: Filtra mensalidades de um aluno por status (PENDENTE, PAGA, ATRASADA)
+ * - findByAlunoIdOrderByDataVencimentoDesc: Lista mensalidades de um aluno ordenadas por vencimento (mais recente primeiro)
+ * - findByStatus: Busca mensalidades por status (ex: listar todas pendentes)
+ * - findByDataVencimentoBefore: Busca mensalidades vencidas antes de uma data (para detectar atrasos)
+ * - findByMesReferenciaAndAnoReferencia: Busca mensalidades de um mês/ano específico
+ * - findByAlunoIdAndMesReferenciaAndAnoReferencia: Busca mensalidade específica de um aluno em um mês/ano (evita duplicação)
+ * - countByAlunoIdAndStatus: Conta mensalidades de um aluno com determinado status (usado em relatórios)
+ */
 public interface MensalidadeRepository extends JpaRepository<Mensalidade, Long> {
 
     List<Mensalidade> findByAlunoId(Long alunoId);

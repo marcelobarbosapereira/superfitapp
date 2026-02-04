@@ -11,6 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de Treinos e Exercícios.
+ * Expõe endpoints para CRUD de treinos com seus exercícios associados.
+ * 
+ * Regras de acesso:
+ * - PROFESSOR: cria e gerencia treinos para seus alunos
+ * - ALUNO: visualiza apenas seus próprios treinos
+ */
 @RestController
 @RequestMapping("/api/treinos")
 public class TreinoController {
@@ -22,8 +30,12 @@ public class TreinoController {
     }
 
     /**
-     * Criar treino
-     * Acesso: PROFESSOR
+     * Cria um novo treino com lista de exercícios.
+     * Acesso restrito: apenas PROFESSOR.
+     * O professor autenticado é automaticamente vinculado ao treino.
+     * 
+     * @param dto Dados do treino (nome, alunoId, lista de exercícios)
+     * @return ResponseEntity com status 201 e dados do treino criado
      */
     @PostMapping
     @PreAuthorize("hasRole('PROFESSOR')")
@@ -35,9 +47,14 @@ public class TreinoController {
     }
 
     /**
-     * Listar treinos
-     * PROFESSOR → seus treinos
-     * ALUNO → seus treinos
+     * Lista treinos de acordo com a role do usuário.
+     * Acesso: PROFESSOR ou ALUNO.
+     * 
+     * Lógica:
+     * - PROFESSOR: retorna treinos que ele criou
+     * - ALUNO: retorna treinos atribuídos a ele
+     * 
+     * @return ResponseEntity com lista de treinos
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ALUNO')")
@@ -46,9 +63,13 @@ public class TreinoController {
     }
 
     /**
-     * Buscar treino por ID
-     * PROFESSOR → apenas seus treinos
-     * ALUNO → apenas seus treinos
+     * Busca um treino específico por ID com seus exercícios.
+     * Acesso:
+     * - PROFESSOR: pode buscar apenas treinos que criou (valida via @treinoService.isTreinoDoProfessor)
+     * - ALUNO: pode buscar apenas treinos atribuídos a ele (valida via @treinoService.isTreinoDoAluno)
+     * 
+     * @param id ID do treino
+     * @return ResponseEntity com dados do treino e seus exercícios
      */
     @GetMapping("/{id}")
     @PreAuthorize("""
@@ -60,8 +81,13 @@ public class TreinoController {
     }
 
     /**
-     * Atualizar treino
-     * Acesso: PROFESSOR (apenas seus treinos)
+     * Atualiza um treino existente e seus exercícios.
+     * Acesso restrito: apenas PROFESSOR que criou o treino.
+     * Remove todos os exercícios antigos e adiciona os novos da lista.
+     * 
+     * @param id ID do treino a ser atualizado
+     * @param dto Novos dados (nome, lista de exercícios)
+     * @return ResponseEntity com dados atualizados
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('PROFESSOR') and @treinoService.isTreinoDoProfessor(#id)")
@@ -73,8 +99,12 @@ public class TreinoController {
     }
 
     /**
-     * Remover treino
-     * Acesso: PROFESSOR (apenas seus treinos)
+     * Remove um treino do sistema.
+     * Acesso restrito: apenas PROFESSOR que criou o treino.
+     * Remove também todos os exercícios associados (cascade).
+     * 
+     * @param id ID do treino a ser removido
+     * @return ResponseEntity com status 204 (No Content)
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('PROFESSOR') and @treinoService.isTreinoDoProfessor(#id)")

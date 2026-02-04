@@ -10,6 +10,10 @@ import org.springframework.security.core.Authentication;
 
 import java.util.Map;
 
+/**
+ * Controller REST API para gerenciamento do perfil do ADMIN.
+ * Expõe endpoint para alteração de senha do administrador.
+ */
 @RestController
 @RequestMapping("/admin/api")
 public class AdminProfileApiController {
@@ -17,6 +21,19 @@ public class AdminProfileApiController {
     @Autowired
     private AdminService adminService;
 
+    /**
+     * Altera a senha do administrador autenticado.
+     * Valida autenticação e role ADMIN manualmente.
+     * 
+     * Lógica de validação:
+     * - Senha atual obrigatória
+     * - Nova senha obrigatória com mínimo de 6 caracteres
+     * - Nova senha deve coincidir com confirmação
+     * 
+     * @param request Map contendo senhaAtual, novaSenha e confirmarSenha
+     * @param authentication Objeto de autenticação do Spring Security
+     * @return ResponseEntity com mensagem de sucesso ou erro
+     */
     @PostMapping("/change-password")
     public ResponseEntity<?> changePassword(@RequestBody Map<String, String> request, Authentication authentication) {
         // Verificar se está autenticado e é ADMIN

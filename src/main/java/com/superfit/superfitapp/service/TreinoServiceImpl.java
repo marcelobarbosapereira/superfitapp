@@ -19,6 +19,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação do serviço de gerenciamento de Treinos e Exercícios.
+ * Gerencia operações CRUD, validações de segurança e relacionamento aluno-professor.
+ */
 @Service("treinoService")
 public class TreinoServiceImpl implements TreinoService {
 
@@ -32,6 +36,13 @@ public class TreinoServiceImpl implements TreinoService {
         this.alunoRepository = alunoRepository;
     }
 
+    /**
+     * Verifica se o treino pertence ao professor autenticado.
+     * Extrai o email do SecurityContext e valida no repositório.
+     * 
+     * @param treinoId ID do treino a ser verificado
+     * @return true se o treino foi criado pelo professor autenticado
+     */
     @Override
     public boolean isTreinoDoProfessor(Long treinoId) {
         String email = SecurityContextHolder.getContext()
@@ -41,6 +52,13 @@ public class TreinoServiceImpl implements TreinoService {
         return treinoRepository.existsByIdAndProfessorUserEmail(treinoId, email);
     }
 
+    /**
+     * Verifica se o treino está vinculado ao aluno autenticado.
+     * Extrai o email do SecurityContext e verifica se o aluno possui este treino.
+     * 
+     * @param treinoId ID do treino a ser verificado
+     * @return true se o treino está atribuído ao aluno autenticado
+     */
     @Override
     public boolean isTreinoDoAluno(Long treinoId) {
         String email = SecurityContextHolder.getContext()
@@ -50,6 +68,16 @@ public class TreinoServiceImpl implements TreinoService {
         return treinoRepository.existsByIdAndAlunoUserEmail(treinoId, email);
     }
 
+    /**
+     * Cria um novo treino com lista de exercícios.
+     * Busca o professor autenticado e o aluno pelo ID.
+     * Valida se o aluno pertence ao professor antes de criar.
+     * Utiliza o método addExercicio do Treino para manter a relação bidirecional.
+     * 
+     * @param dto Dados do treino (nome, alunoId, exercícios)
+     * @return DTO com o treino criado e todos os exercícios
+     * @throws RuntimeException se professor não encontrado, aluno não encontrado ou aluno não pertence ao professor
+     */
     @Override
     @Transactional
     public TreinoResponseDTO criar(TreinoCreateDTO dto) {
@@ -90,6 +118,14 @@ public class TreinoServiceImpl implements TreinoService {
         return toResponseDTO(treino);
     }
 
+    /**
+     * Lista treinos de acordo com o tipo de usuário autenticado.
+     * Professor: retorna treinos que ele criou.
+     * Aluno: retorna treinos atribuídos a ele.
+     * Busca o email do SecurityContext e identifica o tipo de usuário.
+     * 
+     * @return Lista de DTOs com os treinos do usuário
+     */
     @Override
     public List<TreinoResponseDTO> listarTodos() {
         String email = SecurityContextHolder.getContext()
@@ -119,6 +155,14 @@ public class TreinoServiceImpl implements TreinoService {
         return List.of();
     }
 
+    /**
+     * Busca um treino específico por ID com todos os seus exercícios.
+     * Valida que o ID não seja nulo e lança exceção se não encontrar.
+     * 
+     * @param id ID do treino
+     * @return DTO com o treino e lista de exercícios
+     * @throws RuntimeException se o treino não for encontrado
+     */
     @Override
     public TreinoResponseDTO buscarPorId(Long id) {
         Treino treino = treinoRepository.findById(
@@ -128,6 +172,16 @@ public class TreinoServiceImpl implements TreinoService {
         return toResponseDTO(treino);
     }
 
+    /**
+     * Atualiza um treino existente substituindo seus exercícios.
+     * Remove todos os exercícios antigos com clear() e adiciona os novos.
+     * Mantém a relação bidirecional usando addExercicio.
+     * 
+     * @param id ID do treino a ser atualizado
+     * @param dto Novos dados (nome, lista de exercícios)
+     * @return DTO com os dados atualizados
+     * @throws RuntimeException se o treino não for encontrado
+     */
     @Override
     @Transactional
     public TreinoResponseDTO atualizar(Long id, TreinoUpdateDTO dto) {
@@ -157,6 +211,13 @@ public class TreinoServiceImpl implements TreinoService {
         return toResponseDTO(treino);
     }
 
+    /**
+     * Remove um treino do sistema.
+     * Devido ao cascade configurado na entidade, remove também todos os exercícios associados.
+     * 
+     * @param id ID do treino a ser removido
+     * @throws RuntimeException se o treino não for encontrado
+     */
     @Override
     public void remover(Long id) {
         if (!treinoRepository.existsById(Objects.requireNonNull(id, "id"))) {
@@ -165,6 +226,14 @@ public class TreinoServiceImpl implements TreinoService {
         treinoRepository.deleteById(Objects.requireNonNull(id, "id"));
     }
 
+    /**
+     * Converte a entidade Treino em DTO de resposta.
+     * Mapeia a lista de exercícios do treino para ExercicioDTO.
+     * Inclui dados do professor e aluno vinculados.
+     * 
+     * @param treino Entidade Treino a ser convertida
+     * @return DTO com treino, exercícios, professor e aluno
+     */
     private TreinoResponseDTO toResponseDTO(Treino treino) {
         List<ExercicioDTO> exercicios = treino.getExercicios().stream()
                 .map(e -> new ExercicioDTO(

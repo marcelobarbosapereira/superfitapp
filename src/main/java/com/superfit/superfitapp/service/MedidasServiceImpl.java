@@ -18,6 +18,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação do serviço de gerenciamento de Medidas corporais.
+ * Gerencia operações de CRUD, cálculo de IMC e histórico de evolução física dos alunos.
+ */
 @Service("medidasService")
 public class MedidasServiceImpl implements MedidasService {
 
@@ -31,6 +35,13 @@ public class MedidasServiceImpl implements MedidasService {
         this.professorRepository = professorRepository;
     }
 
+    /**
+     * Verifica se a medida pertence ao aluno autenticado.
+     * Extrai o email do SecurityContext e valida no repositório.
+     * 
+     * @param medidasId ID da medida a ser verificada
+     * @return true se a medida pertence ao aluno autenticado
+     */
     @Override
     public boolean isMedidaDoAluno(Long medidasId) {
         String email = SecurityContextHolder.getContext()
@@ -40,6 +51,13 @@ public class MedidasServiceImpl implements MedidasService {
         return medidasRepository.existsByIdAndAlunoUserEmail(medidasId, email);
     }
 
+    /**
+     * Verifica se a medida pertence a um aluno do professor autenticado.
+     * Verifica a relação aluno.professor.user.email.
+     * 
+     * @param medidasId ID da medida a ser verificada
+     * @return true se a medida é de um aluno supervisionado pelo professor
+     */
     @Override
     public boolean isMedidaDoProfessor(Long medidasId) {
         String email = SecurityContextHolder.getContext()
@@ -49,6 +67,16 @@ public class MedidasServiceImpl implements MedidasService {
         return medidasRepository.existsByIdAndAlunoProfessorUserEmail(medidasId, email);
     }
 
+    /**
+     * Cria uma nova medição para um aluno.
+     * Busca o professor autenticado e o aluno pelo ID.
+     * Valida se o aluno pertence ao professor.
+     * Calcula automaticamente o IMC usando o método calcularImc() da entidade Medidas.
+     * 
+     * @param dto Dados da medição (data, peso, peito, cintura, quadril, alunoId)
+     * @return DTO com a medida criada incluindo IMC calculado
+     * @throws RuntimeException se professor não encontrado, aluno não encontrado ou aluno não pertence ao professor
+     */
     @Override
     @Transactional
     public MedidasResponseDTO criar(MedidasCreateDTO dto) {
@@ -83,6 +111,13 @@ public class MedidasServiceImpl implements MedidasService {
         return toResponseDTO(medidas);
     }
 
+    /**
+     * Lista medidas de acordo com o tipo de usuário autenticado.
+     * Professor: retorna medidas de todos os alunos sob sua supervisão.
+     * Aluno: retorna apenas suas próprias medidas em ordem decrescente de data.
+     * 
+     * @return Lista de DTOs com as medidas do usuário
+     */
     @Override
     public List<MedidasResponseDTO> listarTodas() {
         String email = SecurityContextHolder.getContext()
@@ -112,6 +147,13 @@ public class MedidasServiceImpl implements MedidasService {
         return List.of();
     }
 
+    /**
+     * Lista todas as medidas de um aluno específico.
+     * Ordena em ordem decrescente de data (mais recente primeiro).
+     * 
+     * @param alunoId ID do aluno
+     * @return Lista de DTOs com as medidas do aluno
+     */
     @Override
     public List<MedidasResponseDTO> listarPorAluno(Long alunoId) {
         return medidasRepository.findByAlunoIdOrderByDataDesc(
@@ -122,6 +164,16 @@ public class MedidasServiceImpl implements MedidasService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Obtém o histórico completo de evolução física de um aluno.
+     * Busca todas as medidas em ordem crescente de data.
+     * Calcula evolução comparando primeira e última medição (peso e IMC).
+     * Arredonda diferenças para 1 casa decimal.
+     * 
+     * @param alunoId ID do aluno
+     * @return DTO com histórico de medidas, dados do aluno e resumo de evolução
+     * @throws RuntimeException se o aluno não for encontrado
+     */
     @Override
     public HistoricoEvolucaoDTO obterHistoricoEvolucao(Long alunoId) {
         Aluno aluno = alunoRepository.findById(
@@ -168,6 +220,14 @@ public class MedidasServiceImpl implements MedidasService {
         );
     }
 
+    /**
+     * Busca uma medida específica por ID.
+     * Valida que o ID não seja nulo e lança exceção se não encontrar.
+     * 
+     * @param id ID da medida
+     * @return DTO com os dados da medida incluindo IMC
+     * @throws RuntimeException se a medida não for encontrada
+     */
     @Override
     public MedidasResponseDTO buscarPorId(Long id) {
         Medidas medidas = medidasRepository.findById(
@@ -177,6 +237,15 @@ public class MedidasServiceImpl implements MedidasService {
         return toResponseDTO(medidas);
     }
 
+    /**
+     * Atualiza uma medição existente.
+     * Atualiza todos os campos e recalcula automaticamente o IMC.
+     * 
+     * @param id ID da medida a ser atualizada
+     * @param dto Novos dados (data, peso, peito, cintura, quadril)
+     * @return DTO com os dados atualizados incluindo IMC recalculado
+     * @throws RuntimeException se a medida não for encontrada
+     */
     @Override
     @Transactional
     public MedidasResponseDTO atualizar(Long id, MedidasUpdateDTO dto) {
@@ -197,6 +266,13 @@ public class MedidasServiceImpl implements MedidasService {
         return toResponseDTO(medidas);
     }
 
+    /**
+     * Remove uma medição do sistema.
+     * Verifica existência antes de deletar.
+     * 
+     * @param id ID da medida a ser removida
+     * @throws RuntimeException se a medida não for encontrada
+     */
     @Override
     public void remover(Long id) {
         if (!medidasRepository.existsById(Objects.requireNonNull(id, "id"))) {
@@ -205,6 +281,13 @@ public class MedidasServiceImpl implements MedidasService {
         medidasRepository.deleteById(Objects.requireNonNull(id, "id"));
     }
 
+    /**
+     * Converte a entidade Medidas em DTO de resposta.
+     * Inclui todos os dados da medição e informações do aluno vinculado.
+     * 
+     * @param medidas Entidade Medidas a ser convertida
+     * @return DTO com medidas e dados do aluno
+     */
     private MedidasResponseDTO toResponseDTO(Medidas medidas) {
         return new MedidasResponseDTO(
                 medidas.getId(),

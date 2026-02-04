@@ -15,6 +15,17 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import com.superfit.superfitapp.security.JwtAuthenticationFilter;
 
 
+/**
+ * Configuração de segurança do Spring Security.
+ * Define políticas de autenticação, autorização e filtros de segurança.
+ * 
+ * Recursos configurados:
+ * - Autenticação baseada em JWT (sem sessões)
+ * - Autorização em nível de método (@PreAuthorize)
+ * - PasswordEncoder com BCrypt
+ * - Rotas públicas e protegidas
+ * - Desabilitação de CSRF (API REST stateless)
+ */
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
@@ -22,6 +33,14 @@ public class SecurityConfig {
     @Autowired
     private JwtAuthenticationFilter jwtAuthenticationFilter;
 
+    /**
+     * Cria o bean AuthenticationManager usado para autenticação.
+     * Utilizado pelo AuthService no endpoint de login.
+     * 
+     * @param configuration Configuração de autenticação do Spring Security
+     * @return AuthenticationManager configurado
+     * @throws Exception em caso de erro na configuração
+     */
     @Bean
     public AuthenticationManager authenticationManager(
             AuthenticationConfiguration configuration
@@ -29,12 +48,45 @@ public class SecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    /**
+     * Define o encoder de senhas usado no sistema.
+     * BCrypt é um algoritmo de hash adaptativo resistente a ataques de força bruta.
+     * 
+     * @return BCryptPasswordEncoder para hash de senhas
+     */
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
     
 
+        /**
+         * Configura a cadeia de filtros de segurança.
+         * 
+         * Configurações aplicadas:
+         * - CSRF desabilitado (API REST stateless)
+         * - HTTP Basic desabilitado (usa JWT)
+         * - Form Login desabilitado (API REST)
+         * - Frame Options desabilitado (permite H2 Console)
+         * 
+         * Rotas públicas (permitAll):
+         * - /auth/** (endpoints de autenticação)
+         * - /h2-console/** (console do banco H2)
+         * - /home, /logout, / (páginas públicas)
+         * 
+         * Rotas protegidas (authenticated):
+         * - /admin/** (requer autenticação, autorização via @PreAuthorize nos controllers)
+         * - /professor/** (requer autenticação)
+         * - /aluno/** (requer autenticação)
+         * - Qualquer outra rota (requer autenticação)
+         * 
+         * Filtros:
+         * - JwtAuthenticationFilter executado antes de UsernamePasswordAuthenticationFilter
+         * 
+         * @param http HttpSecurity para configuração
+         * @return SecurityFilterChain configurada
+         * @throws Exception em caso de erro na configuração
+         */
         @Bean
         public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 

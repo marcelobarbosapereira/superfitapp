@@ -15,12 +15,35 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.util.List;
 import java.io.IOException;
 
+/**
+ * Filtro de autenticação JWT para Spring Security.
+ * Intercepta todas as requisições HTTP (exceto rotas públicas) e valida tokens JWT.
+ * 
+ * Lógica de execução:
+ * 1. Extrai token do header Authorization (Bearer) ou do cookie "jwtToken"
+ * 2. Valida o token usando JwtService
+ * 3. Extrai email e role do token
+ * 4. Cria um UsernamePasswordAuthenticationToken com as authorities
+ * 5. Define o token no SecurityContextHolder para uso nos controllers
+ * 
+ * Rotas que pulam o filtro (shouldNotFilter):
+ * - /auth/* (endpoints de autenticação)
+ * - /h2-console (banco de dados H2)
+ * - /, /home (páginas públicas)
+ */
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
     private JwtService jwtService;
 
+    /**
+     * Define quais requisições devem pular este filtro.
+     * Rotas públicas e de autenticação não precisam de validação JWT.
+     * 
+     * @param request Requisição HTTP
+     * @return true para pular o filtro, false para executar
+     */
     @Override
     protected boolean shouldNotFilter(@NonNull HttpServletRequest request) {
         String path = request.getServletPath();
@@ -31,6 +54,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             || path.equals("/home");
     }
 
+    /**
+     * Executa a lógica de validação JWT em cada requisição.
+     * 
+     * Fluxo de execução:
+     * 1. Tenta extrair token do header Authorization (formato: "Bearer <token>")
+     * 2. Se não encontrar, tenta extrair do cookie "jwtToken"
+     * 3. Valida o token usando JwtService.isTokenValid()
+     * 4. Extrai email (subject) e role (claim) do token
+     * 5. Verifica se já existe autenticação no SecurityContext
+     * 6. Cria SimpleGrantedAuthority com a role
+     * 7. Cria UsernamePasswordAuthenticationToken e define no SecurityContext
+     * 8. Adiciona detalhes da requisição ao authentication
+     * 9. Continua o filtro chain
+     * 
+     * Em caso de erro, loga a mensagem e continua sem autenticar.
+     * 
+     * @param request Requisição HTTP
+     * @param response Resposta HTTP
+     * @param filterChain Cadeia de filtros
+     * @throws ServletException em caso de erro no filtro
+     * @throws IOException em caso de erro de I/O
+     */
     @Override
     protected void doFilterInternal(
         @NonNull HttpServletRequest request,

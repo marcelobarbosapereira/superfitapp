@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de Medidas corporais dos alunos.
+ * Expõe endpoints para CRUD de medidas, consultas por aluno e histórico de evolução.
+ * 
+ * Regras de acesso:
+ * - PROFESSOR: cria e gerencia medidas de seus alunos
+ * - ALUNO: visualiza apenas suas próprias medidas
+ */
 @RestController
 @RequestMapping("/api/medidas")
 public class MedidasController {
@@ -23,8 +31,12 @@ public class MedidasController {
     }
 
     /**
-     * Criar medidas
-     * Acesso: PROFESSOR
+     * Cria uma nova medição para um aluno.
+     * Acesso restrito: apenas PROFESSOR.
+     * Calcula automaticamente o IMC baseado no peso e altura do aluno.
+     * 
+     * @param dto Dados da medição (data, peso, peito, cintura, quadril, alunoId)
+     * @return ResponseEntity com status 201 e dados da medida criada incluindo IMC
      */
     @PostMapping
     @PreAuthorize("hasRole('PROFESSOR')")
@@ -36,9 +48,14 @@ public class MedidasController {
     }
 
     /**
-     * Listar medidas
-     * PROFESSOR → medidas de todos os seus alunos
-     * ALUNO → apenas suas medidas
+     * Lista medidas de acordo com a role do usuário.
+     * Acesso: PROFESSOR ou ALUNO.
+     * 
+     * Lógica:
+     * - PROFESSOR: retorna medidas de todos os seus alunos
+     * - ALUNO: retorna apenas suas próprias medidas
+     * 
+     * @return ResponseEntity com lista de medidas
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ALUNO')")
@@ -47,9 +64,14 @@ public class MedidasController {
     }
 
     /**
-     * Listar medidas por aluno
-     * PROFESSOR → apenas de seus alunos
-     * ALUNO → apenas suas próprias medidas
+     * Lista todas as medidas de um aluno específico.
+     * Acesso: PROFESSOR ou ALUNO.
+     * Ordenadas em ordem decrescente de data (mais recente primeiro).
+     * 
+     * Nota: Validação de permissão deve ser feita no service layer.
+     * 
+     * @param alunoId ID do aluno
+     * @return ResponseEntity com lista de medidas do aluno
      */
     @GetMapping("/aluno/{alunoId}")
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ALUNO')")
@@ -60,9 +82,15 @@ public class MedidasController {
     }
 
     /**
-     * Obter histórico de evolução de um aluno
-     * PROFESSOR → apenas de seus alunos
-     * ALUNO → apenas seu próprio histórico
+     * Obtém o histórico completo de evolução física de um aluno.
+     * Acesso: PROFESSOR ou ALUNO.
+     * 
+     * Lógica:
+     * - Retorna todas as medidas em ordem cronológica
+     * - Calcula evolução comparando primeira e última medição (peso e IMC)
+     * 
+     * @param alunoId ID do aluno
+     * @return ResponseEntity com histórico de medidas e resumo de evolução
      */
     @GetMapping("/historico/{alunoId}")
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ALUNO')")
@@ -73,9 +101,13 @@ public class MedidasController {
     }
 
     /**
-     * Buscar medidas por ID
-     * PROFESSOR → apenas medidas de seus alunos
-     * ALUNO → apenas suas medidas
+     * Busca uma medida específica por ID.
+     * Acesso:
+     * - PROFESSOR: pode buscar apenas medidas de seus alunos (valida via @medidasService.isMedidaDoProfessor)
+     * - ALUNO: pode buscar apenas suas próprias medidas (valida via @medidasService.isMedidaDoAluno)
+     * 
+     * @param id ID da medida
+     * @return ResponseEntity com dados da medida incluindo IMC
      */
     @GetMapping("/{id}")
     @PreAuthorize("""
@@ -87,8 +119,13 @@ public class MedidasController {
     }
 
     /**
-     * Atualizar medidas
-     * Acesso: PROFESSOR (apenas medidas de seus alunos)
+     * Atualiza uma medição existente.
+     * Acesso restrito: apenas PROFESSOR que supervisiona o aluno.
+     * Recalcula automaticamente o IMC após atualização.
+     * 
+     * @param id ID da medida a ser atualizada
+     * @param dto Novos dados (data, peso, peito, cintura, quadril)
+     * @return ResponseEntity com dados atualizados incluindo IMC recalculado
      */
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('PROFESSOR') and @medidasService.isMedidaDoProfessor(#id)")
@@ -100,8 +137,11 @@ public class MedidasController {
     }
 
     /**
-     * Remover medidas
-     * Acesso: PROFESSOR (apenas medidas de seus alunos)
+     * Remove uma medição do sistema.
+     * Acesso restrito: apenas PROFESSOR que supervisiona o aluno.
+     * 
+     * @param id ID da medida a ser removida
+     * @return ResponseEntity com status 204 (No Content)
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('PROFESSOR') and @medidasService.isMedidaDoProfessor(#id)")

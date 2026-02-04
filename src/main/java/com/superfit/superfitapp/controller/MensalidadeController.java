@@ -12,6 +12,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de Mensalidades dos alunos.
+ * Expõe endpoints para CRUD de mensalidades e consultas por aluno/status.
+ * 
+ * Regras de acesso:
+ * - ADMIN/GESTOR: acesso total a todas as mensalidades
+ * - ALUNO: visualiza apenas suas próprias mensalidades
+ */
 @RestController
 @RequestMapping("/api/mensalidades")
 public class MensalidadeController {
@@ -23,8 +31,12 @@ public class MensalidadeController {
     }
 
     /**
-     * Criar mensalidade
-     * Acesso: ADMIN / GESTOR
+     * Cria uma nova mensalidade para um aluno.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * Define a data de criação como a data atual.
+     * 
+     * @param dto Dados da mensalidade (alunoId, valor, status, dataVencimento, mêsReferencia, anoReferencia)
+     * @return ResponseEntity com status 201 e dados da mensalidade criada
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
@@ -36,8 +48,10 @@ public class MensalidadeController {
     }
 
     /**
-     * Listar todas as mensalidades
-     * Acesso: ADMIN / GESTOR
+     * Lista todas as mensalidades cadastradas no sistema.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * 
+     * @return ResponseEntity com lista de todas as mensalidades
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
@@ -46,8 +60,12 @@ public class MensalidadeController {
     }
 
     /**
-     * Listar mensalidades de um aluno
-     * Acesso: ADMIN / GESTOR / ALUNO (suas próprias mensalidades)
+     * Lista mensalidades de um aluno específico.
+     * Acesso: ADMIN, GESTOR ou ALUNO (suas próprias mensalidades).
+     * Ordenadas em ordem decrescente de data de vencimento.
+     * 
+     * @param alunoId ID do aluno
+     * @return ResponseEntity com lista de mensalidades do aluno
      */
     @GetMapping("/aluno/{alunoId}")
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR') or hasRole('ALUNO')")

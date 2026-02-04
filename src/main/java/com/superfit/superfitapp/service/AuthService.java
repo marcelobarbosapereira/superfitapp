@@ -10,6 +10,10 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 
+/**
+ * Serviço de autenticação de usuários.
+ * Gerencia o processo de login utilizando Spring Security e geração de tokens JWT.
+ */
 @Service
 public class AuthService {
 
@@ -19,6 +23,20 @@ public class AuthService {
     @Autowired
     private JwtService jwtService;
 
+    /**
+     * Autentica um usuário e gera um token JWT.
+     * 
+     * Lógica:
+     * 1. Autentica o usuário usando AuthenticationManager com email e senha
+     * 2. Extrai o email e a primeira role (authority) da autenticação
+     * 3. Converte a role para o enum Role
+     * 4. Registra o login no console (email, role, hora)
+     * 5. Gera e retorna um token JWT usando JwtService
+     * 
+     * @param request DTO contendo email e password
+     * @return Token JWT válido para autenticação
+     * @throws RuntimeException se o usuário não possuir role definida
+     */
     public String login(LoginRequest request) {
 
     Authentication authentication = authenticationManager.authenticate(

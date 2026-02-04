@@ -11,6 +11,14 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+/**
+ * Controller REST para gerenciamento de Professores.
+ * Expõe endpoints para CRUD de professores com controle de acesso baseado em roles.
+ * 
+ * Regras de acesso:
+ * - ADMIN/GESTOR: acesso total a todos os professores
+ * - PROFESSOR: acesso apenas aos próprios dados
+ */
 @RestController
 @RequestMapping("/api/professores")
 public class ProfessorController {
@@ -22,8 +30,11 @@ public class ProfessorController {
     }
 
     /**
-     * Criar professor
-     * Acesso: ADMIN / GESTOR
+     * Cria um novo professor no sistema.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * 
+     * @param dto Dados do professor (nome, email, telefone, CREFI)
+     * @return ResponseEntity com status 201 e dados do professor criado
      */
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
@@ -35,8 +46,10 @@ public class ProfessorController {
     }
 
     /**
-     * Listar todos os professores
-     * Acesso: ADMIN / GESTOR
+     * Lista todos os professores cadastrados.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * 
+     * @return ResponseEntity com lista de todos os professores
      */
     @GetMapping
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
@@ -45,10 +58,13 @@ public class ProfessorController {
     }
 
     /**
-     * Buscar professor por ID
+     * Busca um professor específico por ID.
      * Acesso:
-     * - ADMIN / GESTOR → qualquer professor
-     * - PROFESSOR → apenas o próprio
+     * - ADMIN/GESTOR: podem buscar qualquer professor
+     * - PROFESSOR: pode buscar apenas seus próprios dados (valida via @professorService.isProfessorDoToken)
+     * 
+     * @param id ID do professor
+     * @return ResponseEntity com dados do professor
      */
     @GetMapping("/{id}")
     @PreAuthorize("""
@@ -62,10 +78,14 @@ public class ProfessorController {
     }
 
     /**
-     * Atualizar professor
+     * Atualiza os dados de um professor existente.
      * Acesso:
-     * - ADMIN / GESTOR → qualquer professor
-     * - PROFESSOR → apenas o próprio
+     * - ADMIN/GESTOR: podem atualizar qualquer professor
+     * - PROFESSOR: pode atualizar apenas seus próprios dados
+     * 
+     * @param id ID do professor a ser atualizado
+     * @param dto Novos dados (nome, telefone, CREFI)
+     * @return ResponseEntity com dados atualizados
      */
     @PutMapping("/{id}")
     @PreAuthorize("""
@@ -80,8 +100,11 @@ public class ProfessorController {
     }
 
     /**
-     * Remover professor
-     * Acesso: ADMIN / GESTOR
+     * Remove um professor do sistema.
+     * Acesso restrito: apenas ADMIN ou GESTOR.
+     * 
+     * @param id ID do professor a ser removido
+     * @return ResponseEntity com status 204 (No Content)
      */
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")

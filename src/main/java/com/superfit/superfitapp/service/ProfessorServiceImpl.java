@@ -12,6 +12,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação do serviço de gerenciamento de Professores.
+ * Gerencia operações CRUD, autenticação e conversão de DTOs.
+ */
 @Service("professorService")
 public class ProfessorServiceImpl implements ProfessorService {
 
@@ -25,6 +29,13 @@ public class ProfessorServiceImpl implements ProfessorService {
        MÉTODOS DE SEGURANÇA
        ======================= */
 
+    /**
+     * Verifica se o professor pertence ao usuário autenticado.
+     * Extrai o email do SecurityContext e valida no repositório.
+     * 
+     * @param professorId ID do professor a ser verificado
+     * @return true se existe um professor com o ID fornecido vinculado ao email do usuário autenticado
+     */
     @Override
     public boolean isProfessorDoToken(Long professorId) {
         String email = SecurityContextHolder.getContext()
@@ -38,6 +49,13 @@ public class ProfessorServiceImpl implements ProfessorService {
        MÉTODOS DE NEGÓCIO
        ======================= */
 
+    /**
+     * Cria um novo professor no sistema.
+     * Instancia a entidade Professor, define os atributos e persiste no banco.
+     * 
+     * @param dto Dados do professor (nome, email, telefone, CREFI)
+     * @return DTO com os dados do professor criado incluindo o ID gerado
+     */
     @Override
     public ProfessorResponseDTO criar(ProfessorCreateDTO dto) {
         Professor professor = new Professor();
@@ -53,6 +71,12 @@ public class ProfessorServiceImpl implements ProfessorService {
         return toResponseDTO(professor);
     }
 
+    /**
+     * Lista todos os professores cadastrados.
+     * Utiliza stream para converter cada entidade em DTO.
+     * 
+     * @return Lista de DTOs com todos os professores
+     */
     @Override
     public List<ProfessorResponseDTO> listarTodos() {
         return professorRepository.findAll()
@@ -61,6 +85,14 @@ public class ProfessorServiceImpl implements ProfessorService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca um professor específico por ID.
+     * Valida que o ID não seja nulo e lança exceção se não encontrar.
+     * 
+     * @param id ID do professor
+     * @return DTO com os dados do professor
+     * @throws RuntimeException se o professor não for encontrado
+     */
     @Override
     public ProfessorResponseDTO buscarPorId(Long id) {
         Professor professor = professorRepository.findById(
@@ -71,6 +103,15 @@ public class ProfessorServiceImpl implements ProfessorService {
         return toResponseDTO(professor);
     }
 
+    /**
+     * Atualiza os dados de um professor existente.
+     * Busca o professor por ID, atualiza os campos permitidos (nome, telefone, CREFI) e persiste.
+     * 
+     * @param id ID do professor a ser atualizado
+     * @param dto Novos dados (nome, telefone, CREFI)
+     * @return DTO com os dados atualizados
+     * @throws RuntimeException se o professor não for encontrado
+     */
     @Override
     public ProfessorResponseDTO atualizar(Long id, ProfessorUpdateDTO dto) {
         Professor professor = professorRepository.findById(
@@ -86,6 +127,13 @@ public class ProfessorServiceImpl implements ProfessorService {
         return toResponseDTO(professor);
     }
 
+    /**
+     * Remove um professor do sistema.
+     * Verifica existência antes de deletar para lançar mensagem de erro apropriada.
+     * 
+     * @param id ID do professor a ser removido
+     * @throws RuntimeException se o professor não for encontrado
+     */
     @Override
     public void remover(Long id) {
         if (!professorRepository.existsById(Objects.requireNonNull(id, "id"))) {
@@ -98,6 +146,13 @@ public class ProfessorServiceImpl implements ProfessorService {
        MÉTODO UTILITÁRIO (DTO)
        ======================= */
 
+    /**
+     * Converte a entidade Professor em DTO de resposta.
+     * Prioriza o email do User vinculado, caso contrário usa o email direto do Professor.
+     * 
+     * @param professor Entidade Professor a ser convertida
+     * @return DTO com os dados do professor formatados para resposta
+     */
     private ProfessorResponseDTO toResponseDTO(Professor professor) {
         String email = professor.getUser() != null
                 ? professor.getUser().getEmail()

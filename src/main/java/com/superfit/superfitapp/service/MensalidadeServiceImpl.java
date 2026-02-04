@@ -16,6 +16,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Implementação do serviço de gerenciamento de Mensalidades.
+ * Gerencia operações CRUD, controle de pagamentos e consultas por status.
+ */
 @Service
 public class MensalidadeServiceImpl implements MensalidadeService {
 
@@ -25,6 +29,14 @@ public class MensalidadeServiceImpl implements MensalidadeService {
     @Autowired
     private AlunoRepository alunoRepository;
 
+    /**
+     * Cria uma nova mensalidade para um aluno.
+     * Busca o aluno por ID, define os dados da mensalidade e a data de criação como LocalDate.now().
+     * 
+     * @param dto Dados da mensalidade (alunoId, valor, status, dataVencimento, mêsReferencia, anoReferencia, observações)
+     * @return DTO com a mensalidade criada
+     * @throws IllegalArgumentException se o aluno não for encontrado
+     */
     @Override
     public MensalidadeResponseDTO criar(MensalidadeCreateDTO dto) {
         Optional<Aluno> aluno = alunoRepository.findById(dto.getAlunoId());
@@ -46,6 +58,12 @@ public class MensalidadeServiceImpl implements MensalidadeService {
         return toDTO(salva);
     }
 
+    /**
+     * Lista todas as mensalidades cadastradas no sistema.
+     * Utiliza stream para converter cada entidade em DTO.
+     * 
+     * @return Lista de DTOs com todas as mensalidades
+     */
     @Override
     public List<MensalidadeResponseDTO> listar() {
         return mensalidadeRepository.findAll().stream()
@@ -53,6 +71,13 @@ public class MensalidadeServiceImpl implements MensalidadeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lista mensalidades de um aluno específico.
+     * Ordena em ordem decrescente de data de vencimento.
+     * 
+     * @param alunoId ID do aluno
+     * @return Lista de DTOs com as mensalidades do aluno
+     */
     @Override
     public List<MensalidadeResponseDTO> listarPorAluno(Long alunoId) {
         return mensalidadeRepository.findByAlunoIdOrderByDataVencimentoDesc(alunoId).stream()
@@ -60,6 +85,13 @@ public class MensalidadeServiceImpl implements MensalidadeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Lista mensalidades de um aluno filtrando por status específico.
+     * 
+     * @param alunoId ID do aluno
+     * @param status Status desejado (PENDENTE, PAGA, ATRASADA)
+     * @return Lista de DTOs com as mensalidades que atendem aos critérios
+     */
     @Override
     public List<MensalidadeResponseDTO> listarPorAlunoEStatus(Long alunoId, StatusMensalidade status) {
         return mensalidadeRepository.findByAlunoIdAndStatus(alunoId, status).stream()
@@ -67,6 +99,13 @@ public class MensalidadeServiceImpl implements MensalidadeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Busca uma mensalidade específica por ID.
+     * 
+     * @param id ID da mensalidade
+     * @return DTO com os dados da mensalidade
+     * @throws IllegalArgumentException se a mensalidade não for encontrada
+     */
     @Override
     public MensalidadeResponseDTO buscarPorId(Long id) {
         Optional<Mensalidade> mensalidade = mensalidadeRepository.findById(id);
@@ -76,6 +115,16 @@ public class MensalidadeServiceImpl implements MensalidadeService {
         return toDTO(mensalidade.get());
     }
 
+    /**
+     * Atualiza os dados de uma mensalidade existente.
+     * Atualiza apenas os campos fornecidos no DTO (valores não nulos).
+     * Se o status for alterado para PAGA e não houver dataPagamento, define como LocalDate.now().
+     * 
+     * @param id ID da mensalidade a ser atualizada
+     * @param dto Novos dados (valor, status, dataVencimento, dataPagamento, observações)
+     * @return DTO com os dados atualizados
+     * @throws IllegalArgumentException se a mensalidade não for encontrada
+     */
     @Override
     public MensalidadeResponseDTO atualizar(Long id, MensalidadeUpdateDTO dto) {
         Optional<Mensalidade> mensalidade = mensalidadeRepository.findById(id);
@@ -107,6 +156,13 @@ public class MensalidadeServiceImpl implements MensalidadeService {
         return toDTO(atualizada);
     }
 
+    /**
+     * Remove uma mensalidade do sistema.
+     * Verifica existência antes de deletar.
+     * 
+     * @param id ID da mensalidade a ser removida
+     * @throws IllegalArgumentException se a mensalidade não for encontrada
+     */
     @Override
     public void remover(Long id) {
         if (!mensalidadeRepository.existsById(id)) {
@@ -115,6 +171,11 @@ public class MensalidadeServiceImpl implements MensalidadeService {
         mensalidadeRepository.deleteById(id);
     }
 
+    /**
+     * Lista todas as mensalidades com status PENDENTE.
+     * 
+     * @return Lista de DTOs com mensalidades pendentes de todos os alunos
+     */
     @Override
     public List<MensalidadeResponseDTO> listarPendentes() {
         return mensalidadeRepository.findByStatus(StatusMensalidade.PENDENTE).stream()
@@ -122,6 +183,13 @@ public class MensalidadeServiceImpl implements MensalidadeService {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * Marca uma mensalidade como paga.
+     * Altera o status para PAGA e define a data de pagamento como LocalDate.now().
+     * 
+     * @param id ID da mensalidade
+     * @throws IllegalArgumentException se a mensalidade não for encontrada
+     */
     @Override
     public void marcarComoPaga(Long id) {
         Optional<Mensalidade> mensalidade = mensalidadeRepository.findById(id);
@@ -135,11 +203,24 @@ public class MensalidadeServiceImpl implements MensalidadeService {
         mensalidadeRepository.save(m);
     }
 
+    /**
+     * Conta o número de mensalidades pendentes de um aluno.
+     * 
+     * @param alunoId ID do aluno
+     * @return Número de mensalidades com status PENDENTE
+     */
     @Override
     public long countPendentesPorAluno(Long alunoId) {
         return mensalidadeRepository.countByAlunoIdAndStatus(alunoId, StatusMensalidade.PENDENTE);
     }
 
+    /**
+     * Converte a entidade Mensalidade em DTO de resposta.
+     * Inclui todos os dados da mensalidade e informações do aluno vinculado.
+     * 
+     * @param mensalidade Entidade Mensalidade a ser convertida
+     * @return DTO com mensalidade e dados do aluno
+     */
     private MensalidadeResponseDTO toDTO(Mensalidade mensalidade) {
         return new MensalidadeResponseDTO(
                 mensalidade.getId(),
