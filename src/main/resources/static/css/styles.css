@@ -1,0 +1,26 @@
+/* ===== SUPERFIT APP - ESTILOS PRINCIPAIS ===== */
+
+/* 1. VARIÁVEIS E RESET */
+@import url('variables.css');
+@import url('reset.css');
+
+/* 2. LAYOUT */
+@import url('layout/navbar.css');
+
+/* 3. COMPONENTES */
+@import url('components/buttons.css');
+@import url('components/forms.css');
+@import url('components/cards.css');
+@import url('components/messages.css');
+@import url('components/tables.css');
+@import url('components/modals.css');
+@import url('components/badges.css');
+
+/* 4. PÁGINAS */
+@import url('pages/login.css');
+@import url('pages/dashboard.css');
+
+/* 5. UTILITIES */
+@import url('utils/grid.css');
+@import url('utils/responsive.css');
+@import url('utils/animations.css');

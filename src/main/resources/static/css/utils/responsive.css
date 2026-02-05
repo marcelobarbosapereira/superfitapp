@@ -1,0 +1,107 @@
+/* ===== RESPONSIVIDADE ===== */
+
+.hidden-mobile {
+    display: none;
+}
+
+.hidden-desktop {
+    display: block;
+}
+
+.text-center-mobile {
+    text-align: center;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* ===== DESKTOP ===== */
+
+@media (min-width: var(--breakpoint-md)) {
+    .hidden-mobile {
+        display: block;
+    }
+    
+    .hidden-desktop {
+        display: none;
+    }
+    
+    .text-center-mobile {
+        text-align: left;
+    }
+}
+
+/* ===== DISPLAY ===== */
+
+.d-none {
+    display: none !important;
+}
+
+.d-block {
+    display: block !important;
+}
+
+.d-inline {
+    display: inline !important;
+}
+
+.d-inline-block {
+    display: inline-block !important;
+}
+
+.d-flex {
+    display: flex !important;
+}
+
+.d-grid {
+    display: grid !important;
+}
+
+/* ===== VISIBILIDADE ===== */
+
+.invisible {
+    visibility: hidden;
+}
+
+.visible {
+    visibility: visible;
+}
+
+/* ===== OVERFLOW ===== */
+
+.overflow-hidden {
+    overflow: hidden;
+}
+
+.overflow-auto {
+    overflow: auto;
+}
+
+.text-truncate {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* ===== OPACIDADE ===== */
+
+.opacity-50 {
+    opacity: 0.5;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+.opacity-100 {
+    opacity: 1;
+}

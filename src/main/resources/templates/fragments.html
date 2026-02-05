@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar" th:fragment="navbar(title)">
+    <h1 class="navbar__brand" th:text="${title}">SuperFit App</h1>
+    <div class="navbar__menu">
+        <a href="/aluno/dashboard" class="navbar__link">Home</a>
+        <a href="/aluno/mensalidades" class="navbar__link">Mensalidades</a>
+        <a href="/logout" class="navbar__link navbar__button">Sair</a>
+    </div>
+</nav>
+
+<!-- ===== NAVBAR ADMIN ===== -->
+<nav class="navbar" th:fragment="navbar-admin(title)">
+    <h1 class="navbar__brand" th:text="${title}">SuperFit App</h1>
+    <button class="navbar__button" onclick="logout()">Sair</button>
+</nav>
+
+<!-- ===== CARD ===== -->
+<div class="card" th:fragment="card(title, subtitle)">
+    <div class="card__header">
+        <h2 class="card__title" th:text="${title}">Título</h2>
+        <p class="card__subtitle" th:if="${subtitle}" th:text="${subtitle}">Subtítulo</p>
+    </div>
+    <div class="card__body" th:insert="~{this :: card-body}"></div>
+</div>
+
+<!-- ===== CARD COM SEÇÃO ===== -->
+<div class="card card--elevated" th:fragment="card-section(title)">
+    <h3 class="card__title" th:text="${title}">Título da Seção</h3>
+    <div class="card__body" th:insert="~{this :: card-section-body}"></div>
+</div>
+
+<!-- ===== MENSAGEM ===== -->
+<div class="message" th:fragment="message(id, type='success')">
+    <div th:id="${id}" th:class="'message message--' + ${type}"></div>
+</div>
+
+<!-- ===== FORMULÁRIO - GRUPO ===== -->
+<div class="form-group" th:fragment="form-group(name, label, type='text', placeholder='', required=false)">
+    <label th:for="${name}" class="form-group__label" th:text="${label}">Label</label>
+    <input 
+        th:id="${name}"
+        th:name="${name}"
+        th:type="${type}"
+        class="form-group__input"
+        th:placeholder="${placeholder}"
+        th:required="${required}">
+</div>
+
+<!-- ===== FORMULÁRIO - TEXTAREA ===== -->
+<div class="form-group" th:fragment="form-textarea(name, label, rows=5, placeholder='', required=false)">
+    <label th:for="${name}" class="form-group__label" th:text="${label}">Label</label>
+    <textarea
+        th:id="${name}"
+        th:name="${name}"
+        th:rows="${rows}"
+        class="form-group__textarea"
+        th:placeholder="${placeholder}"
+        th:required="${required}"></textarea>
+</div>
+
+<!-- ===== BOTÃO PRIMÁRIO ===== -->
+<button type="submit" class="btn btn--primary" th:fragment="btn-primary(text='Enviar')">
+    <span th:text="${text}">Enviar</span>
+</button>
+
+<!-- ===== BOTÃO SECUNDÁRIO ===== -->
+<button type="button" class="btn btn--secondary" th:fragment="btn-secondary(text='Cancelar', onclick='')">
+    <span th:text="${text}">Cancelar</span>
+</button>
+
+<!-- ===== MODAL ===== -->
+<div th:fragment="modal(id, title)" th:id="${id}" class="modal">
+    <div class="modal__content">
+        <div class="modal__header">
+            <h2 class="modal__title" th:text="${title}">Título do Modal</h2>
+            <button type="button" class="modal__close" th:onclick="'closeModal(\'' + ${id} + '\')'>&times;</button>
+        </div>
+        <div class="modal__body" th:insert="~{this :: modal-body}"></div>
+        <div class="modal__footer" th:insert="~{this :: modal-footer}"></div>
+    </div>
+</div>
+
+<!-- ===== TABELA ===== -->
+<div class="table-wrapper" th:fragment="table-container">
+    <table class="table" th:insert="~{this :: table-content}">
+    </table>
+</div>
+
+<!-- ===== STAT BOX ===== -->
+<div class="stat-box" th:fragment="stat-box(label, value)">
+    <div class="stat-box__label" th:text="${label}">Label</div>
+    <div class="stat-box__number" th:text="${value}">0</div>
+</div>
+
+<!-- ===== EMPTY STATE ===== -->
+<div class="empty-state" th:fragment="empty-state(message='Nenhum item encontrado')">
+    <p th:text="${message}">Nenhum item encontrado</p>
+</div>
+
+<!-- ===== MENU ITEM ===== -->
+<a th:fragment="menu-item(href, icon, title, description)" 
+   th:href="${href}" 
+   class="menu-item">
+    <span class="menu-item__icon" th:text="${icon}">📚</span>
+    <h3 class="menu-item__title" th:text="${title}">Título</h3>
+    <p class="menu-item__description" th:text="${description}">Descrição</p>
+</a>
+
+<!-- ===== BADGE ===== -->
+<span class="badge" th:fragment="badge(text, type='primary')">
+    <span th:class="'badge badge--' + ${type}" th:text="${text}">Badge</span>
+</span>
+
+<!-- ===== BREADCRUMB ===== -->
+<nav class="breadcrumb" th:fragment="breadcrumb(items)" aria-label="Breadcrumb">
+    <ol class="breadcrumb__list">
+        <li th:each="item : ${items}" class="breadcrumb__item">
+            <a th:if="${item.href}" th:href="${item.href}" class="breadcrumb__link" th:text="${item.label}">Item</a>
+            <span th:unless="${item.href}" class="breadcrumb__text" th:text="${item.label}">Item</span>
+        </li>
+    </ol>
+</nav>
+
+<!-- ===== PAGINAÇÃO ===== -->
+<nav class="pagination" th:fragment="pagination(currentPage, totalPages, pageLink)" aria-label="Paginação">
+    <ul class="pagination__list">
+        <li th:if="${currentPage > 1}" class="pagination__item">
+            <a th:href="@{${pageLink}(page=1)}" class="pagination__link">« Primeira</a>
+        </li>
+        <li th:if="${currentPage > 1}" class="pagination__item">
+            <a th:href="@{${pageLink}(page=${currentPage - 1})}" class="pagination__link">‹ Anterior</a>
+        </li>
+        <li th:each="page : ${#numbers.sequence(1, totalPages)}" 
+            th:class="'pagination__item' + (${page == currentPage} ? ' pagination__item--active' : '')">
+            <a th:if="${page != currentPage}" 
+               th:href="@{${pageLink}(page=${page})}" 
+               class="pagination__link" 
+               th:text="${page}">1</a>
+            <span th:if="${page == currentPage}" 
+                  class="pagination__link pagination__link--current" 
+                  th:text="${page}">1</span>
+        </li>
+        <li th:if="${currentPage < totalPages}" class="pagination__item">
+            <a th:href="@{${pageLink}(page=${currentPage + 1})}" class="pagination__link">Próximo ›</a>
+        </li>
+        <li th:if="${currentPage < totalPages}" class="pagination__item">
+            <a th:href="@{${pageLink}(page=${totalPages})}" class="pagination__link">Última »</a>
+        </li>
+    </ul>
+</nav>
+
+</body>
+</html>

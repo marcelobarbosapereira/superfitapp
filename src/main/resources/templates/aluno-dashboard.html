@@ -4,205 +4,69 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - SuperFit App</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f5f5f5;
-            color: #333;
-        }
-
-        .navbar {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 1rem 2rem;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        }
-
-        .navbar h1 {
-            display: inline-block;
-            font-size: 24px;
-        }
-
-        .navbar .user-menu {
-            float: right;
-            margin-top: 0.5rem;
-        }
-
-        .navbar a {
-            color: white;
-            margin-left: 2rem;
-            text-decoration: none;
-            transition: opacity 0.3s;
-        }
-
-        .navbar a:hover {
-            opacity: 0.8;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-        }
-
-        .card {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            padding: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .card h2 {
-            margin-bottom: 1rem;
-            color: #667eea;
-            border-bottom: 2px solid #667eea;
-            padding-bottom: 0.5rem;
-        }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .menu-item {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 2rem;
-            border-radius: 10px;
-            text-decoration: none;
-            transition: transform 0.3s, box-shadow 0.3s;
-            text-align: center;
-            cursor: pointer;
-        }
-
-        .menu-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 20px rgba(102, 126, 234, 0.4);
-        }
-
-        .menu-item h3 {
-            margin-bottom: 0.5rem;
-            font-size: 20px;
-        }
-
-        .menu-item p {
-            font-size: 14px;
-            opacity: 0.9;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .stat-box {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            border-left: 4px solid #667eea;
-        }
-
-        .stat-box .number {
-            font-size: 32px;
-            font-weight: bold;
-            color: #667eea;
-            margin: 0.5rem 0;
-        }
-
-        .stat-box .label {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .logout-btn {
-            background: #ff6b6b;
-            color: white;
-            border: none;
-            padding: 0.5rem 1.5rem;
-            border-radius: 5px;
-            cursor: pointer;
-            text-decoration: none;
-            display: inline-block;
-        }
-
-        .logout-btn:hover {
-            background: #ff5252;
-        }
-    </style>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
+    <!-- Navbar -->
     <nav class="navbar">
-        <h1>🏋️ SuperFit App</h1>
-        <div class="user-menu">
-            <a href="/aluno/mensalidades">Mensalidades</a>
-            <a href="/aluno/dashboard">Home</a>
-            <a href="/logout" class="logout-btn">Sair</a>
+        <h1 class="navbar__brand">🏋️ SuperFit App</h1>
+        <div class="navbar__menu">
+            <a href="/aluno/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/aluno/dashboard" class="navbar__link">Home</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
         </div>
     </nav>
 
     <div class="container">
-        <div class="card">
-            <h2>Bem-vindo ao SuperFit!</h2>
-            <p>Aqui você pode acompanhar suas mensalidades, treinos e medidas.</p>
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Bem-vindo ao SuperFit!</h2>
+                <p class="card__subtitle">Aqui você pode acompanhar suas mensalidades, treinos e medidas.</p>
+            </div>
         </div>
 
+        <!-- Estatísticas -->
         <div class="stats">
             <div class="stat-box">
-                <div class="label">Mensalidades Pendentes</div>
-                <div class="number" id="pendentes">-</div>
+                <div class="stat-box__label">Mensalidades Pendentes</div>
+                <div class="stat-box__number" id="pendentes">-</div>
             </div>
             <div class="stat-box">
-                <div class="label">Status da Academia</div>
-                <div class="number">✓</div>
+                <div class="stat-box__label">Status da Academia</div>
+                <div class="stat-box__number">✓</div>
             </div>
         </div>
 
-        <div class="card">
-            <h2>Menu Principal</h2>
+        <!-- Menu Principal -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Menu Principal</h3>
             <div class="menu-grid">
                 <a href="/aluno/mensalidades" class="menu-item">
-                    <h3>💳 Mensalidades</h3>
-                    <p>Visualize e gerenie suas mensalidades</p>
+                    <span class="menu-item__icon">💳</span>
+                    <h3 class="menu-item__title">Mensalidades</h3>
+                    <p class="menu-item__description">Visualize e gerencie suas mensalidades</p>
                 </a>
                 <a href="#" class="menu-item">
-                    <h3>📊 Medidas</h3>
-                    <p>Acompanhe sua evolução</p>
+                    <span class="menu-item__icon">📊</span>
+                    <h3 class="menu-item__title">Medidas</h3>
+                    <p class="menu-item__description">Acompanhe sua evolução</p>
                 </a>
                 <a href="#" class="menu-item">
-                    <h3>🏋️ Treinos</h3>
-                    <p>Seus treinos personalizados</p>
+                    <span class="menu-item__icon">🏋️</span>
+                    <h3 class="menu-item__title">Treinos</h3>
+                    <p class="menu-item__description">Seus treinos personalizados</p>
                 </a>
                 <a href="#" class="menu-item">
-                    <h3>👤 Perfil</h3>
-                    <p>Edite suas informações</p>
+                    <span class="menu-item__icon">👤</span>
+                    <h3 class="menu-item__title">Perfil</h3>
+                    <p class="menu-item__description">Edite suas informações</p>
                 </a>
             </div>
         </div>
     </div>
 
-    <script>
-        // Carregar número de mensalidades pendentes
-        fetch('/api/mensalidades/aluno/' + localStorage.getItem('alunoId') + '/pendentes/count')
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('pendentes').textContent = data;
-            })
-            .catch(error => {
-                console.log('Não foi possível carregar as mensalidades');
-                document.getElementById('pendentes').textContent = '0';
-            });
-    </script>
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/aluno.js}"></script>
 </body>
 </html>

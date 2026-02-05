@@ -94,9 +94,17 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .httpBasic(httpBasic -> httpBasic.disable())
                 .formLogin(form -> form.disable())
+                .logout(logout -> logout.disable())
                 .headers(headers -> headers.frameOptions(frameOptions -> frameOptions.disable()))
 
                 .authorizeHttpRequests(auth -> auth
+                    // Permitir acesso a recursos estáticos
+                    .requestMatchers("/js/**").permitAll()
+                    .requestMatchers("/css/**").permitAll()
+                    .requestMatchers("/images/**").permitAll()
+                    .requestMatchers("/favicon.ico").permitAll()
+                    
+                    // Endpoints públicos
                     .requestMatchers("/auth/**").permitAll()
                     .requestMatchers("/h2-console/**").permitAll()
                     .requestMatchers("/home").permitAll()
@@ -107,6 +115,7 @@ public class SecurityConfig {
                     .requestMatchers("/admin/**").authenticated()
                     .requestMatchers("/professor/**").authenticated()
                     .requestMatchers("/aluno/**").authenticated()
+                    .requestMatchers("/gestor/**").authenticated()
 
                     .anyRequest().authenticated()
                 );

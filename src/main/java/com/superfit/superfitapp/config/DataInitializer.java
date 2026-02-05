@@ -49,6 +49,12 @@ public class DataInitializer implements CommandLineRunner {
         // Cria GESTOR padrão
         criarGestorSeNaoExistir();
         
+        // Cria PROFESSOR padrão
+        criarProfessorSeNaoExistir();
+        
+        // Cria ALUNO padrão
+        criarAlunoSeNaoExistir();
+        
         System.out.println("========================================");
         System.out.println("DataInitializer finalizado!");
         System.out.println("========================================\n");
@@ -60,9 +66,9 @@ public class DataInitializer implements CommandLineRunner {
      * Senha é codificada com BCrypt antes de persistir.
      */
     private void criarAdminSeNaoExistir() {
-        if (!userRepository.existsByEmail("admin")) {
+        if (!userRepository.existsByEmail("admin@superfit.com")) {
             User adminUser = new User(
-                "admin",
+                "admin@superfit.com",
                 passwordEncoder.encode("12345"),
                 Role.ROLE_ADMIN
             );
@@ -80,9 +86,9 @@ public class DataInitializer implements CommandLineRunner {
      * Senha é codificada com BCrypt antes de persistir.
      */
     private void criarGestorSeNaoExistir() {
-        if (!userRepository.existsByEmail("gestor")) {
+        if (!userRepository.existsByEmail("gestor@superfit.com")) {
             User gestorUser = new User(
-                "gestor",
+                "gestor@superfit.com",
                 passwordEncoder.encode("12345"),
                 Role.ROLE_GESTOR
             );
@@ -91,6 +97,46 @@ public class DataInitializer implements CommandLineRunner {
             System.out.println("   Email: gestor | Senha: 12345");
         } else {
             System.out.println("ℹ️ Usuário GESTOR já existe");
+        }
+    }
+    
+    /**
+     * Cria o usuário PROFESSOR padrão se não existir.
+     * Credenciais: email="professor", senha="12345", role=ROLE_PROFESSOR.
+     * Senha é codificada com BCrypt antes de persistir.
+     */
+    private void criarProfessorSeNaoExistir() {
+        if (!userRepository.existsByEmail("professor@superfit.com")) {
+            User professorUser = new User(
+                "professor@superfit.com",
+                passwordEncoder.encode("12345"),
+                Role.ROLE_PROFESSOR
+            );
+            userRepository.save(professorUser);
+            System.out.println("✅ Usuário PROFESSOR criado com sucesso!");
+            System.out.println("   Email: professor | Senha: 12345");
+        } else {
+            System.out.println("ℹ️ Usuário PROFESSOR já existe");
+        }
+    }
+    
+    /**
+     * Cria o usuário ALUNO padrão se não existir.
+     * Credenciais: email="aluno", senha="12345", role=ROLE_ALUNO.
+     * Senha é codificada com BCrypt antes de persistir.
+     */
+    private void criarAlunoSeNaoExistir() {
+        if (!userRepository.existsByEmail("aluno@superfit.com")) {
+            User alunoUser = new User(
+                "aluno@superfit.com",
+                passwordEncoder.encode("12345"),
+                Role.ROLE_ALUNO
+            );
+            userRepository.save(alunoUser);
+            System.out.println("✅ Usuário ALUNO criado com sucesso!");
+            System.out.println("   Email: aluno@superfit.com | Senha: 12345");
+        } else {
+            System.out.println("ℹ️ Usuário ALUNO já existe");
         }
     }
 }

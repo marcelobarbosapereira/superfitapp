@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Gestor - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">SuperFit App - Gestor</h1>
+        <div class="navbar__menu">
+            <a href="/gestor/dashboard" class="navbar__link">Home</a>
+            <a href="/gestor/alunos" class="navbar__link">Alunos</a>
+            <a href="/gestor/professores" class="navbar__link">Professores</a>
+            <a href="/gestor/relatorios" class="navbar__link">Relatórios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Bem-vindo, Gestor!</h2>
+                <p class="card__subtitle">Gerencie alunos, professores e acompanhe a academia</p>
+            </div>
+        </div>
+
+        <!-- Estatísticas Principais -->
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-box__label">Total de Alunos</div>
+                <div class="stat-box__number" id="totalAlunos">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-box__label">Professores</div>
+                <div class="stat-box__number" id="totalProfessores">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-box__label">Mensalidades Pendentes</div>
+                <div class="stat-box__number" id="mensalidadesPendentes">-</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-box__label">Receita do Mês</div>
+                <div class="stat-box__number" id="receitaMes">-</div>
+            </div>
+        </div>
+
+        <!-- Menu Principal -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Menu de Ações</h3>
+            <div class="menu-grid">
+                <a href="/gestor/alunos" class="menu-item">
+                    <span class="menu-item__icon">👥</span>
+                    <h3 class="menu-item__title">Alunos</h3>
+                    <p class="menu-item__description">Cadastre e gerencie alunos</p>
+                </a>
+                <a href="/gestor/professores" class="menu-item">
+                    <span class="menu-item__icon">👨‍🏫</span>
+                    <h3 class="menu-item__title">Professores</h3>
+                    <p class="menu-item__description">Gerencie instrutores</p>
+                </a>
+                <a href="/gestor/mensalidades" class="menu-item">
+                    <span class="menu-item__icon">💳</span>
+                    <h3 class="menu-item__title">Mensalidades</h3>
+                    <p class="menu-item__description">Controle de pagamentos</p>
+                </a>
+                <a href="/gestor/relatorios" class="menu-item">
+                    <span class="menu-item__icon">📊</span>
+                    <h3 class="menu-item__title">Relatórios</h3>
+                    <p class="menu-item__description">Análise e estatísticas</p>
+                </a>
+            </div>
+        </div>
+
+        <!-- Alunos Recentes -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Alunos Recentes</h3>
+            <div id="alunosMessage" class="message"></div>
+            
+            <div class="table-wrapper">
+                <table class="table" id="alunosTable">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Nome</th>
+                            <th class="table__header-cell">Email</th>
+                            <th class="table__header-cell">Status</th>
+                            <th class="table__header-cell">Mensalidade</th>
+                            <th class="table__header-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alunosBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state d-none">
+                <p>Nenhum aluno cadastrado ainda</p>
+            </div>
+        </div>
+
+        <!-- Mensalidades Pendentes -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Mensalidades Pendentes</h3>
+            
+            <div class="table-wrapper">
+                <table class="table" id="mensalidadesTable">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Aluno</th>
+                            <th class="table__header-cell">Valor</th>
+                            <th class="table__header-cell">Vencimento</th>
+                            <th class="table__header-cell">Status</th>
+                            <th class="table__header-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="mensalidadesBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyMensalidades" class="empty-state d-none">
+                <p>Nenhuma mensalidade pendente</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/gestor.js}"></script>
+</body>
+</html>
