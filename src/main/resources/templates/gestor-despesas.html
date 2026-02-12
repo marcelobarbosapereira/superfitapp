@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestao de Despesas - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1 class="navbar__brand">SuperFit App - Gestor</h1>
+        <div class="navbar__menu">
+            <a href="/gestor/dashboard" class="navbar__link">Home</a>
+            <a href="/gestor/alunos" class="navbar__link">Alunos</a>
+            <a href="/gestor/professores" class="navbar__link">Professores</a>
+            <a href="/gestor/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/gestor/despesas" class="navbar__link">Despesas</a>
+            <a href="/gestor/relatorios" class="navbar__link">Relatorios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Gerenciamento de Despesas</h2>
+                <p class="card__subtitle">Registre e acompanhe despesas da academia</p>
+            </div>
+        </div>
+
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">Cadastrar Despesa</h3>
+                <p class="card__subtitle">Preencha os dados para criar uma nova despesa</p>
+            </div>
+            <div class="card__body">
+                <div id="despesasFormMessage" class="message"></div>
+                <form id="despesaForm" class="form" action="#" method="post" novalidate>
+                    <div class="form-group">
+                        <label for="descricao" class="form-group__label">Descricao *</label>
+                        <input id="descricao" name="descricao" type="text" class="form-group__input" placeholder="Ex: Conta de energia" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="valor" class="form-group__label">Valor (R$) *</label>
+                        <input id="valor" name="valor" type="number" step="0.01" class="form-group__input" placeholder="250.00" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="categoria" class="form-group__label">Categoria *</label>
+                        <select id="categoria" name="categoria" class="form-group__input" required>
+                            <option value="">Selecione</option>
+                            <option value="SALARIO">Salario</option>
+                            <option value="ALUGUEL">Aluguel</option>
+                            <option value="SERVICOS">Servicos</option>
+                            <option value="MANUTENCAO">Manutencao</option>
+                            <option value="MATERIAL">Material</option>
+                            <option value="UTENSÍLIOS">Utensilios</option>
+                            <option value="ENERGIA">Energia</option>
+                            <option value="AGUA">Agua</option>
+                            <option value="INTERNET">Internet</option>
+                            <option value="TELEFONE">Telefone</option>
+                            <option value="LIMPEZA">Limpeza</option>
+                            <option value="SEGURANCA">Seguranca</option>
+                            <option value="ALIMENTOS">Alimentos</option>
+                            <option value="MARKETING">Marketing</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataDespesa" class="form-group__label">Data da Despesa *</label>
+                        <input id="dataDespesa" name="dataDespesa" type="date" class="form-group__input" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-group__label" for="paga">
+                            <input id="paga" name="paga" type="checkbox" style="margin-right: 0.5rem;">
+                            Despesa paga
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataPagamento" class="form-group__label">Data de Pagamento</label>
+                        <input id="dataPagamento" name="dataPagamento" type="date" class="form-group__input" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label for="observacoes" class="form-group__label">Observacoes</label>
+                        <textarea id="observacoes" name="observacoes" class="form-group__input" rows="3" placeholder="Observacoes sobre a despesa..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card card--elevated">
+            <div class="card__header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card__title">Lista de Despesas</h3>
+                <button type="button" class="btn btn--secondary" onclick="carregarDespesas()" style="margin: 0;">🔄 Atualizar</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Descricao</th>
+                            <th class="table__header-cell">Valor</th>
+                            <th class="table__header-cell">Categoria</th>
+                            <th class="table__header-cell">Data</th>
+                            <th class="table__header-cell">Status</th>
+                            <th class="table__header-cell">Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="despesasBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <p>Nenhuma despesa cadastrada.</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="editModalDespesa" class="modal" style="display: none;">
+        <div class="modal__content" style="background: white; padding: 2rem; border-radius: 8px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15); z-index: 1000;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Editar Despesa</h2>
+                <button onclick="closeEditModalDespesa()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <form id="editDespesaForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                <input type="hidden" id="editDespesaId">
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Descricao</label>
+                    <input id="editDescricao" type="text" class="form-group__input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Valor (R$)</label>
+                    <input id="editValor" type="number" step="0.01" class="form-group__input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Categoria</label>
+                    <select id="editCategoria" class="form-group__input" required>
+                        <option value="SALARIO">Salario</option>
+                        <option value="ALUGUEL">Aluguel</option>
+                        <option value="SERVICOS">Servicos</option>
+                        <option value="MANUTENCAO">Manutencao</option>
+                        <option value="MATERIAL">Material</option>
+                        <option value="UTENSÍLIOS">Utensilios</option>
+                        <option value="ENERGIA">Energia</option>
+                        <option value="AGUA">Agua</option>
+                        <option value="INTERNET">Internet</option>
+                        <option value="TELEFONE">Telefone</option>
+                        <option value="LIMPEZA">Limpeza</option>
+                        <option value="SEGURANCA">Seguranca</option>
+                        <option value="ALIMENTOS">Alimentos</option>
+                        <option value="MARKETING">Marketing</option>
+                        <option value="OUTROS">Outros</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Data da Despesa</label>
+                    <input id="editDataDespesa" type="date" class="form-group__input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">
+                        <input id="editPaga" type="checkbox" style="margin-right: 0.5rem;">
+                        Despesa paga
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Data de Pagamento</label>
+                    <input id="editDataPagamento" type="date" class="form-group__input" disabled>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Observacoes</label>
+                    <textarea id="editObservacoes" class="form-group__input" rows="3"></textarea>
+                </div>
+                <div id="editDespesaModalMessage" style="padding: 0.75rem; border-radius: 6px; display: none; font-weight: 600;"></div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn--primary" style="flex: 1;">Salvar</button>
+                    <button type="button" onclick="closeEditModalDespesa()" class="btn btn--secondary" style="flex: 1; background: #ccc; border: none; cursor: pointer;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/gestor-despesas.js}"></script>
+</body>
+</html>

@@ -5,6 +5,7 @@ public class AlunoUpdateDTO {
     private String nome;
     private String telefone;
     private Boolean ativo;
+    private String senha;
 
     public String getNome() {
         return nome;
@@ -28,5 +29,13 @@ public class AlunoUpdateDTO {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

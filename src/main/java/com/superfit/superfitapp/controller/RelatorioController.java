@@ -1,7 +1,9 @@
 package com.superfit.superfitapp.controller;
 
 import com.superfit.superfitapp.model.StatusMensalidade;
+import com.superfit.superfitapp.repository.AlunoRepository;
 import com.superfit.superfitapp.repository.MensalidadeRepository;
+import com.superfit.superfitapp.repository.ProfessorRepository;
 import com.superfit.superfitapp.service.DespesaService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,10 +22,15 @@ public class RelatorioController {
 
     private final DespesaService despesaService;
     private final MensalidadeRepository mensalidadeRepository;
+    private final AlunoRepository alunoRepository;
+    private final ProfessorRepository professorRepository;
 
-    public RelatorioController(DespesaService despesaService, MensalidadeRepository mensalidadeRepository) {
+    public RelatorioController(DespesaService despesaService, MensalidadeRepository mensalidadeRepository,
+                              AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
         this.despesaService = despesaService;
         this.mensalidadeRepository = mensalidadeRepository;
+        this.alunoRepository = alunoRepository;
+        this.professorRepository = professorRepository;
     }
 
     /**
@@ -186,6 +193,122 @@ public class RelatorioController {
     ) {
         YearMonth yearMonth = YearMonth.of(ano, mes);
         Map<String, Object> relatorio = despesaService.obterRelatorioMensalCompleto(yearMonth);
+        return ResponseEntity.ok(relatorio);
+    }
+
+    /**
+     * Relatório de Alunos Ativos (sem inadimplência)
+     * Acesso: ADMIN / GESTOR
+     */
+    @GetMapping("/alunos-ativos")
+    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    public ResponseEntity<Map<String, Object>> relatorioAlunosAtivos() {
+        Map<String, Object> relatorio = new HashMap<>();
+        
+        long totalAlunos = alunoRepository.count();
+        
+        // Alunos sem mensalidades pendentes
+        List<Map<String, Object>> alunosAtivos = alunoRepository.findAll().stream()
+                .filter(aluno -> {
+                    long pendentes = mensalidadeRepository.countByAlunoIdAndStatus(aluno.getId(), StatusMensalidade.PENDENTE);
+                    return pendentes == 0;
+                })
+                .map(aluno -> {
+                    Map<String, Object> map = new HashMap<>();
+                    map.put("id", aluno.getId());
+                    map.put("nome", aluno.getNome());
+                    map.put("email", aluno.getEmail());
+                    map.put("telefone", aluno.getTelefone());
+                    return map;
+                })
+                .collect(Collectors.toList());
+        
+        relatorio.put("totalAlunos", totalAlunos);
+        relatorio.put("alunosAtivos", alunosAtivos.size());
+        relatorio.put("listaAtivos", alunosAtivos);
+        relatorio.put("percentualAtivos", totalAlunos > 0 ? (alunosAtivos.size() * 100.0 / totalAlunos) : 0);
+        
+        return ResponseEntity.ok(relatorio);
+    }
+
+    /**
+     * Relatório de Professores com estatísticas
+     * Acesso: ADMIN / GESTOR
+     */
+    @GetMapping("/professores")
+    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    public ResponseEntity<Map<String, Object>> relatorioProfessores() {
+        Map<String, Object> relatorio = new HashMap<>();
+        
+        List<Map<String, Object>> statsProfessores = professorRepository.findAll().stream()
+                .map(prof -> {
+                    long qtdAlunos = alunoRepository.findAll().stream()
+                            .filter(aluno -> aluno.getProfessor() != null && 
+                                           aluno.getProfessor().getId().equals(prof.getId()))
+                            .count();
+                    
+                    Map<String, Object> stats = new HashMap<>();
+                    stats.put("professorId", prof.getId());
+                    stats.put("professorNome", prof.getNome());
+                    stats.put("professorEmail", prof.getEmail());
+                    stats.put("quantidadeAlunos", qtdAlunos);
+                    return stats;
+                })
+                .collect(Collectors.toList());
+        
+        long totalAlunos = alunoRepository.count();
+        long totalProfessores = professorRepository.count();
+        double mediaAlunosPorProfessor = totalProfessores > 0 ? (double) totalAlunos / totalProfessores : 0;
+        
+        relatorio.put("totalProfessores", totalProfessores);
+        relatorio.put("totalAlunos", totalAlunos);
+        relatorio.put("mediaAlunosPorProfessor", mediaAlunosPorProfessor);
+        relatorio.put("listaProfessores", statsProfessores);
+        
+        return ResponseEntity.ok(relatorio);
+    }
+
+    /**
+     * Relatório de Receita Mensal Simplificado
+     * Acesso: ADMIN / GESTOR
+     */
+    @GetMapping("/receita-mensal")
+    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    public ResponseEntity<Map<String, Object>> receitaMensal() {
+        Map<String, Object> relatorio = new HashMap<>();
+        
+        // Total de mensalidades
+        long totalMensalidades = mensalidadeRepository.count();
+        
+        // Mensalidades pagas
+        long totalPagas = mensalidadeRepository.findByStatus(StatusMensalidade.PAGA).size();
+        
+        // Mensalidades pendentes
+        long totalPendentes = mensalidadeRepository.findByStatus(StatusMensalidade.PENDENTE).size();
+        
+        // Receita realizada
+        double receitaRealizada = mensalidadeRepository.findByStatus(StatusMensalidade.PAGA).stream()
+                .mapToDouble(m -> m.getValor())
+                .sum();
+        
+        // Receita prevista
+        double receitaPrevista = mensalidadeRepository.findAll().stream()
+                .mapToDouble(m -> m.getValor())
+                .sum();
+        
+        // Receita pendente
+        double receitaPendente = mensalidadeRepository.findByStatus(StatusMensalidade.PENDENTE).stream()
+                .mapToDouble(m -> m.getValor())
+                .sum();
+        
+        relatorio.put("totalMensalidades", totalMensalidades);
+        relatorio.put("totalPagas", totalPagas);
+        relatorio.put("totalPendentes", totalPendentes);
+        relatorio.put("receitaRealizada", receitaRealizada);
+        relatorio.put("receitaPrevista", receitaPrevista);
+        relatorio.put("receitaPendente", receitaPendente);
+        relatorio.put("taxaAdimplencia", totalMensalidades > 0 ? (totalPagas * 100.0 / totalMensalidades) : 0);
+        
         return ResponseEntity.ok(relatorio);
     }
 }

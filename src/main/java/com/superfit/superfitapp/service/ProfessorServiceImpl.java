@@ -4,8 +4,12 @@ import com.superfit.superfitapp.dto.professor.ProfessorCreateDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorResponseDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorUpdateDTO;
 import com.superfit.superfitapp.model.Professor;
+import com.superfit.superfitapp.model.Role;
+import com.superfit.superfitapp.model.User;
 import com.superfit.superfitapp.repository.ProfessorRepository;
+import com.superfit.superfitapp.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -20,9 +24,13 @@ import java.util.stream.Collectors;
 public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public ProfessorServiceImpl(ProfessorRepository professorRepository) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.professorRepository = professorRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /* =======================
@@ -58,14 +66,20 @@ public class ProfessorServiceImpl implements ProfessorService {
      */
     @Override
     public ProfessorResponseDTO criar(ProfessorCreateDTO dto) {
+        // Cria um usuário com senha padrão "123456" para o professor
+        User user = new User(
+            dto.getEmail(),
+            passwordEncoder.encode("123456"),
+            Role.ROLE_PROFESSOR
+        );
+        user = userRepository.save(user);
+
         Professor professor = new Professor();
         professor.setNome(dto.getNome());
         professor.setEmail(dto.getEmail());
         professor.setTelefone(dto.getTelefone());
         professor.setCrefi(dto.getCrefi());
-
-        // aqui normalmente você vincula o User com role PROFESSOR
-        // professor.setUser(user);
+        professor.setUser(user);
 
         professor = professorRepository.save(professor);
         return toResponseDTO(professor);
@@ -122,6 +136,15 @@ public class ProfessorServiceImpl implements ProfessorService {
         professor.setNome(dto.getNome());
         professor.setTelefone(dto.getTelefone());
         professor.setCrefi(dto.getCrefi());
+
+        // Atualiza a senha do usuário vinculado se fornecida
+        if (dto.getSenha() != null && !dto.getSenha().trim().isEmpty()) {
+            User user = professor.getUser();
+            if (user != null) {
+                user.setPassword(passwordEncoder.encode(dto.getSenha()));
+                userRepository.save(user);
+            }
+        }
 
         professor = professorRepository.save(professor);
         return toResponseDTO(professor);

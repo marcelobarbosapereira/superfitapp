@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatorios - Gestor - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1 class="navbar__brand">SuperFit App - Gestor</h1>
+        <div class="navbar__menu">
+            <a href="/gestor/dashboard" class="navbar__link">Home</a>
+            <a href="/gestor/alunos" class="navbar__link">Alunos</a>
+            <a href="/gestor/professores" class="navbar__link">Professores</a>
+            <a href="/gestor/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/gestor/despesas" class="navbar__link">Despesas</a>
+            <a href="/gestor/relatorios" class="navbar__link">Relatorios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Relatórios</h2>
+                <p class="card__subtitle">Acompanhe indicadores e estatísticas</p>
+            </div>
+        </div>
+
+        <!-- Receita Mensal -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">📈 Receita Mensal</h3>
+            </div>
+            <div class="card__body" id="receitaMensalContainer">
+                <p>Carregando...</p>
+            </div>
+        </div>
+
+        <!-- Alunos Ativos -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">✅ Alunos Ativos</h3>
+            </div>
+            <div class="card__body" id="alunosAtivosContainer">
+                <p>Carregando...</p>
+            </div>
+        </div>
+
+        <!-- Inadimplência -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">⚠️ Inadimplência</h3>
+            </div>
+            <div class="card__body" id="inadimplenciaContainer">
+                <p>Carregando...</p>
+            </div>
+        </div>
+
+        <!-- Professores -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">👨‍🏫 Estatísticas de Professores</h3>
+            </div>
+            <div class="card__body" id="professoresContainer">
+                <p>Carregando...</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/gestor-relatorios.js}"></script>
+</body>
+</html>

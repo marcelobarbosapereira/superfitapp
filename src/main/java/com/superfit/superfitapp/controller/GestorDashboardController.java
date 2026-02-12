@@ -21,4 +21,29 @@ public class GestorDashboardController {
     public String dashboard(Model model) {
         return "gestor-dashboard";
     }
+
+    @GetMapping("/alunos")
+    public String alunos() {
+        return "gestor-alunos";
+    }
+
+    @GetMapping("/professores")
+    public String professores() {
+        return "gestor-professores";
+    }
+
+    @GetMapping("/mensalidades")
+    public String mensalidades() {
+        return "gestor-mensalidades";
+    }
+
+    @GetMapping("/despesas")
+    public String despesas() {
+        return "gestor-despesas";
+    }
+
+    @GetMapping("/relatorios")
+    public String relatorios() {
+        return "gestor-relatorios";
+    }
 }

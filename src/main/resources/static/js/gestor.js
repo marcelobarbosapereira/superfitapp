@@ -4,7 +4,66 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEstatisticas();
     loadAlunosRecentes();
     loadMensalidadesPendentes();
+    setupChangePassword();
 });
+
+/**
+ * Configura o formulario de alteracao de senha
+ */
+function setupChangePassword() {
+    const form = document.getElementById('changePasswordForm');
+    if (!form) return;
+
+    form.addEventListener('submit', async (event) => {
+        event.preventDefault();
+
+        const senhaAtual = document.getElementById('senhaAtual').value.trim();
+        const novaSenha = document.getElementById('novaSenha').value.trim();
+        const confirmarSenha = document.getElementById('confirmarSenha').value.trim();
+
+        if (!senhaAtual || !novaSenha || !confirmarSenha) {
+            showMessage('changePasswordMessage', '❌ Preencha todos os campos.', 'error');
+            return;
+        }
+
+        if (novaSenha.length < 6) {
+            showMessage('changePasswordMessage', '❌ A nova senha deve ter no mínimo 6 caracteres.', 'error');
+            return;
+        }
+
+        if (novaSenha !== confirmarSenha) {
+            showMessage('changePasswordMessage', '❌ As senhas não conferem.', 'error');
+            return;
+        }
+
+        try {
+            const response = await fetch('/gestor/api/change-password', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                credentials: 'include',
+                body: JSON.stringify({
+                    senhaAtual,
+                    novaSenha,
+                    confirmarSenha
+                })
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                const message = data && data.error ? data.error : 'Erro ao alterar senha.';
+                showMessage('changePasswordMessage', `❌ ${message}`, 'error');
+                return;
+            }
+
+            showMessage('changePasswordMessage', '✅ Senha alterada com sucesso.', 'success');
+            form.reset();
+        } catch (error) {
+            console.error('Erro ao alterar senha:', error);
+            showMessage('changePasswordMessage', '❌ Erro ao conectar ao servidor.', 'error');
+        }
+    });
+}
 
 /**
  * Carrega estatísticas principais

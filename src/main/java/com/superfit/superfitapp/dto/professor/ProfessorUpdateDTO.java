@@ -5,6 +5,7 @@ public class ProfessorUpdateDTO {
     private String nome;
     private String telefone;
     private String crefi;
+    private String senha;
 
     public String getNome() {
         return nome;
@@ -28,5 +29,13 @@ public class ProfessorUpdateDTO {
 
     public void setCrefi(String crefi) {
         this.crefi = crefi;
+    }
+
+    public String getSenha() {
+        return senha;
+    }
+
+    public void setSenha(String senha) {
+        this.senha = senha;
     }
 }

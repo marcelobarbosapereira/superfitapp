@@ -14,6 +14,8 @@
             <a href="/gestor/dashboard" class="navbar__link">Home</a>
             <a href="/gestor/alunos" class="navbar__link">Alunos</a>
             <a href="/gestor/professores" class="navbar__link">Professores</a>
+            <a href="/gestor/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/gestor/despesas" class="navbar__link">Despesas</a>
             <a href="/gestor/relatorios" class="navbar__link">Relatórios</a>
             <a href="/logout" class="navbar__link navbar__button">Sair</a>
         </div>
@@ -25,6 +27,43 @@
             <div class="card__header">
                 <h2 class="card__title">Bem-vindo, Gestor!</h2>
                 <p class="card__subtitle">Gerencie alunos, professores e acompanhe a academia</p>
+            </div>
+            <div class="card__body">
+                <div id="changePasswordMessage" class="message"></div>
+                <form id="changePasswordForm" class="mt-lg">
+                    <div class="form-row form-row--3">
+                        <div class="form-group">
+                            <label for="senhaAtual" class="form-group__label">Senha atual</label>
+                            <input
+                                type="password"
+                                id="senhaAtual"
+                                class="form-group__input"
+                                placeholder="Digite a senha atual"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="novaSenha" class="form-group__label">Nova senha</label>
+                            <input
+                                type="password"
+                                id="novaSenha"
+                                class="form-group__input"
+                                placeholder="Mínimo 6 caracteres"
+                                minlength="6"
+                                required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirmarSenha" class="form-group__label">Confirmar senha</label>
+                            <input
+                                type="password"
+                                id="confirmarSenha"
+                                class="form-group__input"
+                                placeholder="Repita a nova senha"
+                                minlength="6"
+                                required>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Alterar senha</button>
+                </form>
             </div>
         </div>
 

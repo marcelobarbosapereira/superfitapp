@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestao de Alunos - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+    <nav class="navbar">
+        <h1 class="navbar__brand">SuperFit App - Gestor</h1>
+        <div class="navbar__menu">
+            <a href="/gestor/dashboard" class="navbar__link">Home</a>
+            <a href="/gestor/alunos" class="navbar__link">Alunos</a>
+            <a href="/gestor/professores" class="navbar__link">Professores</a>
+            <a href="/gestor/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/gestor/despesas" class="navbar__link">Despesas</a>
+            <a href="/gestor/relatorios" class="navbar__link">Relatorios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Gerenciamento de Alunos</h2>
+                <p class="card__subtitle">Cadastre, atualize e acompanhe alunos</p>
+            </div>
+        </div>
+
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h3 class="card__title">Cadastrar Aluno</h3>
+                <p class="card__subtitle">Preencha os dados para criar um novo aluno</p>
+            </div>
+            <div class="card__body">
+                <div id="alunosFormMessage" class="message"></div>
+                <form id="alunoForm" class="form" action="#" method="post" novalidate>
+                    <div class="form-group">
+                        <label for="nome" class="form-group__label">Nome</label>
+                        <input id="nome" name="nome" type="text" class="form-group__input" placeholder="Nome completo" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-group__label">Email</label>
+                        <input id="email" name="email" type="email" class="form-group__input" placeholder="email@exemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone" class="form-group__label">Telefone</label>
+                        <input id="telefone" name="telefone" type="tel" class="form-group__input" placeholder="(00) 00000-0000">
+                    </div>
+                    <div class="form-group">
+                        <label for="plano" class="form-group__label">Plano</label>
+                        <select id="plano" name="plano" class="form-group__input" required>
+                            <option value="">Selecione</option>
+                            <option value="mensal">Mensal</option>
+                            <option value="trimestral">Trimestral</option>
+                            <option value="anual">Anual</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="professorId" class="form-group__label">Professor responsavel</label>
+                        <select id="professorId" name="professorId" class="form-group__input" required>
+                            <option value="">Selecione</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn--primary">Cadastrar</button>
+                </form>
+            </div>
+        </div>
+
+        <div class="card card--elevated">
+            <div class="card__header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card__title">Lista de Alunos</h3>
+                <button type="button" class="btn btn--secondary" onclick="carregarAlunos()" style="margin: 0;">🔄 Atualizar</button>
+            </div>
+            <div class="table-wrapper">
+                <table class="table">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Nome</th>
+                            <th class="table__header-cell">Email</th>
+                            <th class="table__header-cell">Status</th>
+                            <th class="table__header-cell">Plano</th>
+                            <th class="table__header-cell">Acoes</th>
+                        </tr>
+                    </thead>
+                    <tbody id="alunosBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state">
+                <p>Nenhum aluno cadastrado.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para editar aluno -->
+    <div id="editModalAluno" class="modal" style="display: none;">
+        <div class="modal__content" style="background: white; padding: 2rem; border-radius: 8px; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 500px; box-shadow: 0 4px 20px rgba(0,0,0,0.15);">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <h2 style="margin: 0;">Editar Aluno</h2>
+                <button onclick="closeEditModalAluno()" style="background: none; border: none; font-size: 24px; cursor: pointer;">&times;</button>
+            </div>
+            <form id="editAlunoForm" style="display: flex; flex-direction: column; gap: 1rem;">
+                <input type="hidden" id="editAlunoId">
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Nome</label>
+                    <input id="editAlunoNome" type="text" class="form-group__input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Email</label>
+                    <input id="editAlunoEmail" type="email" class="form-group__input" required>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Telefone</label>
+                    <input id="editAlunoTelefone" type="tel" class="form-group__input">
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Professor responsavel</label>
+                    <select id="editAlunoProfessor" class="form-group__input" required>
+                        <option value="">Selecione</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">Nova Senha</label>
+                    <input id="editAlunoSenha" type="password" class="form-group__input" placeholder="Deixe em branco para manter a atual">
+                    <small style="color: #666; font-size: 0.85rem;">Deixe em branco se não quiser alterar a senha</small>
+                </div>
+                <div id="editAlunoModalMessage" style="padding: 0.75rem; border-radius: 6px; display: none; font-weight: 600;"></div>
+                <div style="display: flex; gap: 1rem;">
+                    <button type="submit" class="btn btn--primary" style="flex: 1;">Salvar</button>
+                    <button type="button" onclick="closeEditModalAluno()" class="btn btn--secondary" style="flex: 1; background: #ccc; border: none; cursor: pointer;">Cancelar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script th:src="@{/js/gestor-alunos.js}"></script>
+</body>
+</html>

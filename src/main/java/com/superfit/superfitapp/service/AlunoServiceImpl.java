@@ -5,9 +5,13 @@ import com.superfit.superfitapp.dto.aluno.AlunoResponseDTO;
 import com.superfit.superfitapp.dto.aluno.AlunoUpdateDTO;
 import com.superfit.superfitapp.model.Aluno;
 import com.superfit.superfitapp.model.Professor;
+import com.superfit.superfitapp.model.Role;
+import com.superfit.superfitapp.model.User;
 import com.superfit.superfitapp.repository.AlunoRepository;
 import com.superfit.superfitapp.repository.ProfessorRepository;
+import com.superfit.superfitapp.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -23,10 +27,14 @@ public class AlunoServiceImpl implements AlunoService {
 
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
+    private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public AlunoServiceImpl(AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
+    public AlunoServiceImpl(AlunoRepository alunoRepository, ProfessorRepository professorRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.alunoRepository = alunoRepository;
         this.professorRepository = professorRepository;
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /* =======================
@@ -84,12 +92,21 @@ public class AlunoServiceImpl implements AlunoService {
             )
                 .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
 
+        // Cria um usuário com senha padrão "123456" para o aluno
+        User user = new User(
+            dto.getEmail(),
+            passwordEncoder.encode("123456"),
+            Role.ROLE_ALUNO
+        );
+        user = userRepository.save(user);
+
         Aluno aluno = new Aluno();
         aluno.setNome(dto.getNome());
         aluno.setEmail(dto.getEmail());
         aluno.setTelefone(dto.getTelefone());
         aluno.setProfessor(professor);
         aluno.setAtivo(true);
+        aluno.setUser(user);
 
         aluno = alunoRepository.save(aluno);
         return toResponseDTO(aluno);
@@ -146,6 +163,15 @@ public class AlunoServiceImpl implements AlunoService {
         aluno.setNome(dto.getNome());
         aluno.setTelefone(dto.getTelefone());
         aluno.setAtivo(dto.getAtivo());
+
+        // Atualiza a senha do usuário vinculado se fornecida
+        if (dto.getSenha() != null && !dto.getSenha().trim().isEmpty()) {
+            User user = aluno.getUser();
+            if (user != null) {
+                user.setPassword(passwordEncoder.encode(dto.getSenha()));
+                userRepository.save(user);
+            }
+        }
 
         aluno = alunoRepository.save(aluno);
         return toResponseDTO(aluno);
