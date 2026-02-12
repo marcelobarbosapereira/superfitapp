@@ -48,8 +48,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public GestorResponseDTO cadastrarGestor(GestorCreateDTO dto) {
-
-                if (userRepository.existsByEmail(dto.email())) {
+        if (userRepository.existsByEmail(dto.email())) {
             throw new RuntimeException("Email já cadastrado");
         }
 
@@ -60,24 +59,20 @@ public class AdminServiceImpl implements AdminService {
 
         User salvo = userRepository.save(gestor);
 
-        return new GestorResponseDTO(
-                salvo.getId(),
-                salvo.getEmail()
-        );
+        return toGestorResponse(salvo);
     }
 
     @Override
-            public void excluirGestor(Long gestorId) {
-
-                User gestor = userRepository.findById(
-                                Objects.requireNonNull(gestorId, "gestorId")
-                        )
+    public void excluirGestor(Long gestorId) {
+        User gestor = userRepository.findById(
+                        Objects.requireNonNull(gestorId, "gestorId")
+                )
                 .filter(u -> u.getRole() == Role.ROLE_GESTOR)
                 .orElseThrow(() ->
                         new RuntimeException("Gestor não encontrado")
                 );
 
-                userRepository.delete(Objects.requireNonNull(gestor, "gestor"));
+        userRepository.delete(Objects.requireNonNull(gestor, "gestor"));
     }
 
     @Override
@@ -106,10 +101,7 @@ public class AdminServiceImpl implements AdminService {
                 Objects.requireNonNull(gestor, "gestor")
         );
 
-        return new GestorResponseDTO(
-                atualizado.getId(),
-                atualizado.getEmail()
-        );
+        return toGestorResponse(atualizado);
     }
 
     @Override
@@ -117,12 +109,7 @@ public class AdminServiceImpl implements AdminService {
 
         return userRepository.findByRole(Role.ROLE_GESTOR)
                 .stream()
-                .map(u ->
-                        new GestorResponseDTO(
-                                u.getId(),
-                                u.getEmail()
-                        )
-                )
+                .map(this::toGestorResponse)
                 .toList();
     }
 
@@ -152,30 +139,23 @@ public class AdminServiceImpl implements AdminService {
         prof.setUser(usuarioSalvo);
         Professor salvo = professorRepository.save(prof);
 
-        return new ProfessorResponseDTO(
-                salvo.getId(),
-                salvo.getNome(),
-                salvo.getEmail(),
-                salvo.getTelefone(),
-                salvo.getCrefi()
-        );
+        return toProfessorResponse(salvo);
     }
 
     @Override
-            public void excluirProfessor(Long professorId) {
-
-                Professor professor = professorRepository.findById(
-                                Objects.requireNonNull(professorId, "professorId")
-                        )
+    public void excluirProfessor(Long professorId) {
+        Professor professor = professorRepository.findById(
+                        Objects.requireNonNull(professorId, "professorId")
+                )
                 .orElseThrow(() ->
                         new RuntimeException("Professor não encontrado")
                 );
 
-                User professorUser = professor.getUser();
-                if (professorUser != null) {
-                        userRepository.delete(professorUser);
+        User professorUser = professor.getUser();
+        if (professorUser != null) {
+            userRepository.delete(professorUser);
         }
-                professorRepository.delete(Objects.requireNonNull(professor, "professor"));
+        professorRepository.delete(Objects.requireNonNull(professor, "professor"));
     }
 
     @Override
@@ -204,27 +184,13 @@ public class AdminServiceImpl implements AdminService {
             professor.setCrefi(dto.crefi());
         }
 
-        if (dto.password() != null && !dto.password().isBlank()) {
-                        User professorUser = professor.getUser();
-                        if (professorUser != null) {
-                                professorUser.setPassword(
-                        passwordEncoder.encode(dto.password())
-                );
-                                userRepository.save(professorUser);
-            }
-        }
+        updateUserPassword(professor.getUser(), dto.password());
 
-                Professor atualizado = professorRepository.save(
-                        Objects.requireNonNull(professor, "professor")
-                );
-
-        return new ProfessorResponseDTO(
-                atualizado.getId(),
-                atualizado.getNome(),
-                atualizado.getEmail(),
-                atualizado.getTelefone(),
-                atualizado.getCrefi()
+        Professor atualizado = professorRepository.save(
+                Objects.requireNonNull(professor, "professor")
         );
+
+        return toProfessorResponse(atualizado);
     }
 
     @Override
@@ -232,15 +198,7 @@ public class AdminServiceImpl implements AdminService {
 
         return professorRepository.findAll()
                 .stream()
-                .map(p ->
-                        new ProfessorResponseDTO(
-                                p.getId(),
-                                p.getNome(),
-                                p.getEmail(),
-                                p.getTelefone(),
-                                p.getCrefi()
-                        )
-                )
+                .map(this::toProfessorResponse)
                 .toList();
     }
 
@@ -270,31 +228,23 @@ public class AdminServiceImpl implements AdminService {
         aln.setUser(usuarioSalvo);
         Aluno salvo = alunoRepository.save(aln);
 
-        return new AlunoResponseDTO(
-                salvo.getId(),
-                salvo.getNome(),
-                salvo.getEmail(),
-                salvo.getTelefone(),
-                salvo.getDataNascimento(),
-                salvo.getAtivo()
-        );
+        return toAlunoResponse(salvo);
     }
 
     @Override
-            public void excluirAluno(Long alunoId) {
-
-                Aluno aluno = alunoRepository.findById(
-                                Objects.requireNonNull(alunoId, "alunoId")
-                        )
+    public void excluirAluno(Long alunoId) {
+        Aluno aluno = alunoRepository.findById(
+                        Objects.requireNonNull(alunoId, "alunoId")
+                )
                 .orElseThrow(() ->
                         new RuntimeException("Aluno não encontrado")
                 );
 
-                User alunoUser = aluno.getUser();
-                if (alunoUser != null) {
-                        userRepository.delete(alunoUser);
+        User alunoUser = aluno.getUser();
+        if (alunoUser != null) {
+            userRepository.delete(alunoUser);
         }
-                alunoRepository.delete(Objects.requireNonNull(aluno, "aluno"));
+        alunoRepository.delete(Objects.requireNonNull(aluno, "aluno"));
     }
 
     @Override
@@ -323,28 +273,13 @@ public class AdminServiceImpl implements AdminService {
             aluno.setDataNascimento(dto.dataNascimento());
         }
 
-        if (dto.password() != null && !dto.password().isBlank()) {
-                        User alunoUser = aluno.getUser();
-                        if (alunoUser != null) {
-                                alunoUser.setPassword(
-                        passwordEncoder.encode(dto.password())
-                );
-                                userRepository.save(alunoUser);
-            }
-        }
+        updateUserPassword(aluno.getUser(), dto.password());
 
-                Aluno atualizado = alunoRepository.save(
-                        Objects.requireNonNull(aluno, "aluno")
-                );
-
-        return new AlunoResponseDTO(
-                atualizado.getId(),
-                atualizado.getNome(),
-                atualizado.getEmail(),
-                atualizado.getTelefone(),
-                atualizado.getDataNascimento(),
-                atualizado.getAtivo()
+        Aluno atualizado = alunoRepository.save(
+                Objects.requireNonNull(aluno, "aluno")
         );
+
+        return toAlunoResponse(atualizado);
     }
 
     @Override
@@ -352,16 +287,7 @@ public class AdminServiceImpl implements AdminService {
 
         return alunoRepository.findByAtivo(true)
                 .stream()
-                .map(a ->
-                        new AlunoResponseDTO(
-                                a.getId(),
-                                a.getNome(),
-                                a.getEmail(),
-                                a.getTelefone(),
-                                a.getDataNascimento(),
-                                a.getAtivo()
-                        )
-                )
+                .map(this::toAlunoResponse)
                 .toList();
     }
 
@@ -370,7 +296,7 @@ public class AdminServiceImpl implements AdminService {
     // ===============================
 
     @Override
-        public void alterarSenha(String emailAdmin, ChangePasswordDTO dto) {
+    public void alterarSenha(String emailAdmin, ChangePasswordDTO dto) {
 
         User admin = userRepository.findByEmail(emailAdmin)
                 .orElseThrow(() ->
@@ -393,5 +319,39 @@ public class AdminServiceImpl implements AdminService {
         );
 
         userRepository.save(admin);
+    }
+
+    private void updateUserPassword(User user, String rawPassword) {
+        if (user == null || rawPassword == null || rawPassword.isBlank()) {
+            return;
+        }
+
+        user.setPassword(passwordEncoder.encode(rawPassword));
+        userRepository.save(user);
+    }
+
+    private GestorResponseDTO toGestorResponse(User user) {
+        return new GestorResponseDTO(user.getId(), user.getEmail());
+    }
+
+    private ProfessorResponseDTO toProfessorResponse(Professor professor) {
+        return new ProfessorResponseDTO(
+                professor.getId(),
+                professor.getNome(),
+                professor.getEmail(),
+                professor.getTelefone(),
+                professor.getCrefi()
+        );
+    }
+
+    private AlunoResponseDTO toAlunoResponse(Aluno aluno) {
+        return new AlunoResponseDTO(
+                aluno.getId(),
+                aluno.getNome(),
+                aluno.getEmail(),
+                aluno.getTelefone(),
+                aluno.getDataNascimento(),
+                aluno.getAtivo()
+        );
     }
 }
