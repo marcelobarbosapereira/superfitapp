@@ -46,4 +46,28 @@ public class AlunoPortalController {
         model.addAttribute("valor", 150.00); // Valor fictício - seria obtido do banco
         return "aluno-pagamento";
     }
+
+    /**
+     * Visualizar medidas e evolução do aluno
+     */
+    @GetMapping("/medidas")
+    public String visualizarMedidas(Model model) {
+        return "aluno-medidas";
+    }
+
+    /**
+     * Visualizar treinos do aluno
+     */
+    @GetMapping("/treinos")
+    public String visualizarTreinos(Model model) {
+        return "aluno-treinos";
+    }
+
+    /**
+     * Página de perfil do aluno
+     */
+    @GetMapping("/perfil")
+    public String perfil(Model model) {
+        return "aluno-perfil";
+    }
 }

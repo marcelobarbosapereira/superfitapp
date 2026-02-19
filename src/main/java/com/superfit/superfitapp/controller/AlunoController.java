@@ -3,7 +3,9 @@ package com.superfit.superfitapp.controller;
 import com.superfit.superfitapp.dto.aluno.AlunoCreateDTO;
 import com.superfit.superfitapp.dto.aluno.AlunoResponseDTO;
 import com.superfit.superfitapp.dto.aluno.AlunoUpdateDTO;
+import com.superfit.superfitapp.dto.treino.TreinoResponseDTO;
 import com.superfit.superfitapp.service.AlunoService;
+import com.superfit.superfitapp.service.TreinoService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,9 +27,11 @@ import java.util.List;
 public class AlunoController {
 
     private final AlunoService alunoService;
+    private final TreinoService treinoService;
 
-    public AlunoController(AlunoService alunoService) {
+    public AlunoController(AlunoService alunoService, TreinoService treinoService) {
         this.alunoService = alunoService;
+        this.treinoService = treinoService;
     }
 
     /**
@@ -122,5 +126,17 @@ public class AlunoController {
     public ResponseEntity<Void> remover(@PathVariable Long id) {
         alunoService.remover(id);
         return ResponseEntity.noContent().build();
+    }
+
+    /**
+     * Lista todos os treinos do aluno autenticado.
+     * Acesso restrito: apenas ALUNO.
+     * 
+     * @return ResponseEntity com lista de treinos do aluno
+     */
+    @GetMapping("/treinos")
+    @PreAuthorize("hasRole('ALUNO')")
+    public ResponseEntity<List<TreinoResponseDTO>> listarTreinos() {
+        return ResponseEntity.ok(treinoService.listarTodos());
     }
 }

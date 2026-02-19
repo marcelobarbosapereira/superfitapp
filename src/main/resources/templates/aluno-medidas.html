@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Medidas - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/aluno-medidas.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">🏋️ SuperFit App</h1>
+        <div class="navbar__menu">
+            <a href="/aluno/dashboard" class="navbar__link">Home</a>
+            <a href="/aluno/medidas" class="navbar__link">Minhas Medidas</a>
+            <a href="/aluno/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Minhas Medidas e Evolução</h2>
+                <p class="card__subtitle">Acompanhe seu progresso e evolução</p>
+            </div>
+        </div>
+
+        <!-- Seletor de Período -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Selecione o Período</h3>
+            
+            <div class="periodo-selector">
+                <!-- Mês Atual -->
+                <div class="periodo-group">
+                    <label for="mesAtual" class="form-label">Mês Atual</label>
+                    <select id="mesAtual" class="form-control" onchange="carregarMedidas()">
+                        <option value="">Selecione um mês</option>
+                    </select>
+                </div>
+
+                <!-- Ano -->
+                <div class="periodo-group">
+                    <label for="ano" class="form-label">Ano</label>
+                    <select id="ano" class="form-control" onchange="carregarMedidas()">
+                        <option value="">Selecione um ano</option>
+                    </select>
+                </div>
+
+                <!-- Período Anterior -->
+                <div class="periodo-group">
+                    <label class="form-label">Períodos Anteriores</label>
+                    <div id="periodosAnteriores" class="periodos-grid">
+                        <!-- Será preenchido dinamicamente -->
+                    </div>
+                </div>
+            </div>
+
+            <div id="mensagemSelecao" class="message message--info">
+                <p>Selecione um mês para visualizar suas medidas</p>
+            </div>
+        </div>
+
+        <!-- Tabela de Medidas -->
+        <div id="medidasContent" style="display: none;">
+            <div class="card card--elevated">
+                <h3 class="card__title" id="tituloMedidas">Medidas</h3>
+
+                <!-- Resumo -->
+                <div class="stats" style="margin-bottom: 2rem;">
+                    <div class="stat-box">
+                        <div class="stat-box__label">Peso (kg)</div>
+                        <div class="stat-box__number" id="pesoAtual">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box__label">% Gordura</div>
+                        <div class="stat-box__number" id="gorduraAtual">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box__label">IMC</div>
+                        <div class="stat-box__number" id="imcAtual">-</div>
+                    </div>
+                </div>
+
+                <!-- Tabela Principal -->
+                <div class="table-wrapper">
+                    <table class="table" id="medidasTable">
+                        <thead class="table__head">
+                            <tr>
+                                <th class="table__header-cell">Data</th>
+                                <th class="table__header-cell">Peso (kg)</th>
+                                <th class="table__header-cell">Altura (cm)</th>
+                                <th class="table__header-cell">% Gordura</th>
+                                <th class="table__header-cell">Peito (cm)</th>
+                                <th class="table__header-cell">Cintura (cm)</th>
+                                <th class="table__header-cell">Quadril (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medidasBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="empty-state d-none">
+                    <p>Nenhuma medida registrada para este período</p>
+                </div>
+            </div>
+
+            <!-- Tabela Expandida -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Detalhes Completos</h3>
+                
+                <div class="table-wrapper">
+                    <table class="table" id="medidasExpandidaTable">
+                        <thead class="table__head">
+                            <tr>
+                                <th class="table__header-cell">Data</th>
+                                <th class="table__header-cell">Braço D (cm)</th>
+                                <th class="table__header-cell">Braço E (cm)</th>
+                                <th class="table__header-cell">Coxa D (cm)</th>
+                                <th class="table__header-cell">Coxa E (cm)</th>
+                                <th class="table__header-cell">Observações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="medidasExpandidaBody">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/aluno-medidas.js}"></script>
+</body>
+</html>

@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meu Perfil - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/aluno-perfil.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">🏋️ SuperFit App</h1>
+        <div class="navbar__menu">
+            <a href="/aluno/dashboard" class="navbar__link">Home</a>
+            <a href="/aluno/perfil" class="navbar__link">Meu Perfil</a>
+            <a href="/aluno/treinos" class="navbar__link">Meus Treinos</a>
+            <a href="/aluno/medidas" class="navbar__link">Minhas Medidas</a>
+            <a href="/aluno/mensalidades" class="navbar__link">Mensalidades</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Meu Perfil</h2>
+                <p class="card__subtitle">Gerencie suas informações pessoais</p>
+            </div>
+        </div>
+
+        <!-- Informações Pessoais e Foto -->
+        <div class="card card--elevated">
+            <div class="perfil-header">
+                <!-- Foto de Perfil -->
+                <div class="foto-container">
+                    <div id="fotoPerfil" class="foto-perfil" title="Clique para visualizar | Clique direito para alterar">
+                        <img id="fotoImg" src="" alt="Foto de Perfil" class="foto-img">
+                        <div class="foto-placeholder" id="fotoPlaceholder">👤</div>
+                    </div>
+                    <input type="file" id="uploadFoto" style="display: none;" accept="image/*">
+                    <p class="foto-info">Clique para visualizar | Clique direito para alterar</p>
+                </div>
+
+                <!-- Informações Pessoais -->
+                <div class="info-pessoal">
+                    <div class="info-item">
+                        <label class="info-label">Nome</label>
+                        <p id="nomePerfil" class="info-value">-</p>
+                    </div>
+                    <div class="info-item">
+                        <label class="info-label">Email</label>
+                        <p id="emailPerfil" class="info-value">-</p>
+                    </div>
+                    <div class="info-item">
+                        <label class="info-label">Telefone</label>
+                        <p id="telefonePerfil" class="info-value">-</p>
+                    </div>
+                    <div class="info-item">
+                        <label class="info-label">Data de Ingresso</label>
+                        <p id="dataIngresso" class="info-value">-</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Medidas Atuais -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Medidas Atuais</h3>
+            
+            <div class="medidas-grid">
+                <div class="medida-box">
+                    <div class="medida-label">Peso</div>
+                    <div class="medida-valor" id="pesoAtual">-</div>
+                    <div class="medida-unidade">kg</div>
+                </div>
+                <div class="medida-box">
+                    <div class="medida-label">Altura</div>
+                    <div class="medida-valor" id="alturaAtual">-</div>
+                    <div class="medida-unidade">cm</div>
+                </div>
+                <div class="medida-box">
+                    <div class="medida-label">% Gordura</div>
+                    <div class="medida-valor" id="gorduraAtual">-</div>
+                    <div class="medida-unidade">%</div>
+                </div>
+                <div class="medida-box">
+                    <div class="medida-label">IMC</div>
+                    <div class="medida-valor" id="imcAtual">-</div>
+                    <div class="medida-unidade"></div>
+                </div>
+            </div>
+
+            <div class="medidas-info">
+                <p>Última medida: <strong id="ultimaMedidaData">-</strong></p>
+                <a href="/aluno/medidas" class="btn btn--secondary btn--sm">Ver Histórico de Medidas</a>
+            </div>
+        </div>
+
+        <!-- Alterar Senha -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Alterar Senha</h3>
+            
+            <form id="formAlterarSenha" class="form">
+                <div class="form-group">
+                    <label for="senhaAtual" class="form-label">Senha Atual</label>
+                    <input type="password" id="senhaAtual" name="senhaAtual" class="form-control" 
+                           placeholder="Digite sua senha atual" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="novaSenha" class="form-label">Nova Senha</label>
+                    <input type="password" id="novaSenha" name="novaSenha" class="form-control" 
+                           placeholder="Digite sua nova senha" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmarSenha" class="form-label">Confirmar Nova Senha</label>
+                    <input type="password" id="confirmarSenha" name="confirmarSenha" class="form-control" 
+                           placeholder="Confirme sua nova senha" required>
+                </div>
+
+                <div id="senhaMessage" class="message" style="margin: 1rem 0;"></div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn--primary">Alterar Senha</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal para Visualizar Foto -->
+    <div id="fotoModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <span class="modal-close" onclick="fecharModalFoto()">&times;</span>
+            <img id="fotoModalImg" src="" alt="Foto de Perfil" class="modal-img">
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/aluno-perfil.js}"></script>
+</body>
+</html>

@@ -1,0 +1,259 @@
+/* ===== ESTILOS DA PÁGINA DE TREINOS DO ALUNO ===== */
+
+/* Filtro */
+.filtro-grupo {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1rem;
+}
+
+.filtro-grupo .form-group {
+    margin-bottom: 0;
+}
+
+.filtro-grupo .form-label {
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    color: var(--text-dark, #2c3e50);
+}
+
+.filtro-grupo .form-control {
+    padding: 0.75rem;
+    border: 1px solid var(--border-light, #e0e0e0);
+    border-radius: 8px;
+    font-size: 0.95rem;
+}
+
+/* Períodos Anteriores */
+.periodos-antigos {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+.periodo-btn {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.9rem;
+    border: 1px solid var(--primary-color, #6c5ce7);
+    background-color: transparent;
+    color: var(--primary-color, #6c5ce7);
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.periodo-btn:hover {
+    background-color: var(--primary-color, #6c5ce7);
+    color: white;
+}
+
+/* Treino Card Destaque */
+.treino-card-destaque {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.treino-info h4 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.treino-info p {
+    margin: 0.5rem 0;
+    font-size: 0.95rem;
+    opacity: 0.95;
+}
+
+.treino-info strong {
+    font-weight: 600;
+}
+
+.dias-restantes {
+    font-weight: 700;
+    font-size: 1.1rem;
+    padding: 0.2rem 0.5rem;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 4px;
+}
+
+/* Status */
+.status-valido {
+    color: #27ae60;
+    font-weight: 600;
+}
+
+.status-expirado {
+    color: #e74c3c;
+    font-weight: 600;
+    text-decoration: line-through;
+}
+
+/* Tabela */
+.table-wrapper {
+    overflow-x: auto;
+    margin: 1rem 0;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+}
+
+.table__head {
+    background-color: var(--bg-gray, #f5f5f5);
+    border-bottom: 2px solid var(--border-light, #e0e0e0);
+}
+
+.table__header-cell {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: var(--text-dark, #2c3e50);
+}
+
+.table__body-row {
+    border-bottom: 1px solid var(--border-light, #e0e0e0);
+    transition: background-color 0.2s ease;
+}
+
+.table__body-row:hover {
+    background-color: var(--bg-light, #f8f9fa);
+}
+
+.table__body-cell {
+    padding: 1rem;
+    color: var(--text-gray, #555);
+}
+
+/* Detalhes do Treino */
+.treino-detalhes {
+    margin-top: 1.5rem;
+}
+
+.detalhe-secao {
+    margin-bottom: 2rem;
+    padding: 1.5rem;
+    background-color: var(--bg-light, #f8f9fa);
+    border-radius: 8px;
+    border-left: 4px solid var(--primary-color, #6c5ce7);
+}
+
+.detalhe-titulo {
+    font-size: 1.25rem;
+    color: var(--text-dark, #2c3e50);
+    margin-bottom: 1rem;
+    font-weight: 600;
+}
+
+.detalhe-secao p {
+    margin: 0.5rem 0;
+    color: var(--text-gray, #555);
+    line-height: 1.6;
+}
+
+/* Exercício Item */
+.exercicio-item {
+    background-color: white;
+    padding: 1.25rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #e0e0e0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.exercicio-item h5 {
+    color: var(--primary-color, #6c5ce7);
+    margin-bottom: 0.75rem;
+    font-size: 1.1rem;
+}
+
+.exercicio-item p {
+    margin: 0.5rem 0;
+    color: var(--text-gray, #555);
+}
+
+/* Empty State */
+.empty-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-gray, #999);
+    background-color: var(--bg-light, #f8f9fa);
+    border-radius: 8px;
+    border: 1px dashed var(--border-light, #e0e0e0);
+}
+
+.empty-state.d-none {
+    display: none;
+}
+
+/* Message */
+.message {
+    padding: 1rem;
+    border-radius: 8px;
+    margin-bottom: 1rem;
+}
+
+.message--info {
+    background-color: #e3f2fd;
+    color: #1976d2;
+    border: 1px solid #90caf9;
+}
+
+.message--error {
+    background-color: #ffebee;
+    color: #c62828;
+    border: 1px solid #ef5350;
+}
+
+.message--success {
+    background-color: #e8f5e9;
+    color: #2e7d32;
+    border: 1px solid #81c784;
+}
+
+/* Responsivo */
+@media (max-width: 768px) {
+    .periodos-antigos {
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 0.5rem;
+    }
+
+    .periodo-btn {
+        padding: 0.5rem 0.6rem;
+        font-size: 0.85rem;
+    }
+
+    .treino-card-destaque {
+        padding: 1.5rem;
+    }
+
+    .treino-info h4 {
+        font-size: 1.25rem;
+    }
+
+    .table {
+        font-size: 0.85rem;
+    }
+
+    .table__header-cell,
+    .table__body-cell {
+        padding: 0.75rem;
+    }
+
+    .detalhe-secao {
+        padding: 1rem;
+    }
+
+    .exercicio-item {
+        padding: 1rem;
+    }
+}
