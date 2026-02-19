@@ -1,0 +1,65 @@
+## ==============================================
+## Railway Configuration - Production
+## ==============================================
+
+# Server Configuration
+server:
+  port: ${PORT:8080}
+  servlet:
+    context-path: /
+    session:
+      timeout: 30m
+  compression:
+    enabled: true
+    min-response-size: 1024
+
+# Spring Boot
+spring:
+  application:
+    name: superfitapp
+  
+  # Database Configuration
+  datasource:
+    url: ${SPRING_DATASOURCE_URL:jdbc:postgresql://localhost:5432/superfitapp}
+    username: ${SPRING_DATASOURCE_USERNAME:superfit}
+    password: ${SPRING_DATASOURCE_PASSWORD:superfit123}
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+  
+  # JPA/Hibernate
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+        format_sql: false
+    show-sql: false
+
+  # Web Configuration
+  web:
+    resources:
+      cache:
+        period: 31536000
+        cachecontrol:
+          max-age: 31536000
+          public: true
+
+# Logging
+logging:
+  level:
+    root: INFO
+    com.superfit: INFO
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
+
+# Actuator (Health checks)
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      show-details: when-authorized

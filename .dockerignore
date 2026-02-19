@@ -1,0 +1,41 @@
+# Maven
+target/
+*.jar
+*.war
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# IDE
+.vscode/
+.idea/
+*.iml
+*.iws
+*.ipr
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Project specific
+cookies.txt
+node_modules/
+.env
+.env.local
+*.log
+dist/
+build/
+
+# Documentation
+README.md
+LICENSE

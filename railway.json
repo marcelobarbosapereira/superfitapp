@@ -1,0 +1,8 @@
+{
+  "name": "SuperFit App",
+  "description": "Aplicação de gerenciamento de academia e treinos",
+  "projectId": "superfitapp",
+  "builder": "maven",
+  "preDeploy": "mvn clean install",
+  "startCommand": "java -jar target/superfitapp-*.jar"
+}
