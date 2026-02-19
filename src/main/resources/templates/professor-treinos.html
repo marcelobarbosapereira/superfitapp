@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciamento de Treinos - Professor - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/professor.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">🏋️ SuperFit App - Professor</h1>
+        <div class="navbar__menu">
+            <a href="/professor/dashboard" class="navbar__link">Home</a>
+            <a href="/professor/treinos" class="navbar__link">Treinos</a>
+            <a href="/professor/medidas" class="navbar__link">Medidas</a>
+            <a href="/professor/relatorios" class="navbar__link">Relatórios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Gerenciamento de Treinos</h2>
+            </div>
+        </div>
+
+        <!-- Formulário Criar Treino -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Criar Novo Treino</h3>
+            
+            <form id="formCriarTreino" class="form">
+                <!-- Aluno e Nome do Treino -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="aluno" class="form-label">Aluno</label>
+                        <select id="aluno" name="alunoId" class="form-control" required>
+                            <option value="">Selecione um aluno</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="nomeTreino" class="form-label">Nome do Treino</label>
+                        <input type="text" id="nomeTreino" name="nome" class="form-control" 
+                               placeholder="Ex: Treino A - Peito e Tríceps" required>
+                    </div>
+                </div>
+
+                <!-- Descrição -->
+                <div class="form-group">
+                    <label for="descricao" class="form-label">Descrição</label>
+                    <textarea id="descricao" name="descricao" class="form-control" 
+                              placeholder="Descrição do treino, objetivo, observações..." rows="4"></textarea>
+                </div>
+
+                <!-- Tipo e Data de Início -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="tipo" class="form-label">Tipo</label>
+                        <select id="tipo" name="tipo" class="form-control" required>
+                            <option value="">Selecione um tipo</option>
+                            <option value="TIPO_A">Treino A</option>
+                            <option value="TIPO_B">Treino B</option>
+                            <option value="TIPO_C">Treino C</option>
+                            <option value="CARDIO">Cardio</option>
+                            <option value="FLEXIBILIDADE">Flexibilidade</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="dataInicio" class="form-label">Data de Início</label>
+                        <input type="date" id="dataInicio" name="dataInicio" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- Exercícios -->
+                <div class="card__section">
+                    <h4 class="form-section-title">Exercícios</h4>
+                    <div id="exerciciosContainer">
+                        <!-- Exercício será adicionado dinamicamente aqui -->
+                    </div>
+                    <button type="button" class="btn btn--secondary" onclick="adicionarExercicio()">
+                        + Adicionar Exercício
+                    </button>
+                </div>
+
+                <!-- Botões de ação -->
+                <div class="form-actions" style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn--primary">Criar Treino</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Treinos Recentes -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Treinos Recentes</h3>
+            <div id="treinosMessage" class="message"></div>
+            
+            <div class="table-wrapper">
+                <table class="table" id="treinosTable">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Aluno</th>
+                            <th class="table__header-cell">Nome do Treino</th>
+                            <th class="table__header-cell">Tipo</th>
+                            <th class="table__header-cell">Data Início</th>
+                            <th class="table__header-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="treinosBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state d-none">
+                <p>Nenhum treino cadastrado ainda</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/professor-treinos.js}"></script>
+</body>
+</html>

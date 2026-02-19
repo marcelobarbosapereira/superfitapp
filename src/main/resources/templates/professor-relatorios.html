@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Relatório de Progresso e Resultados - Professor - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/professor.css}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">🏋️ SuperFit App - Professor</h1>
+        <div class="navbar__menu">
+            <a href="/professor/dashboard" class="navbar__link">Home</a>
+            <a href="/professor/treinos" class="navbar__link">Treinos</a>
+            <a href="/professor/medidas" class="navbar__link">Medidas</a>
+            <a href="/professor/relatorios" class="navbar__link">Relatórios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Relatório de Progresso e Resultados</h2>
+            </div>
+        </div>
+
+        <!-- Filtros -->
+        <div class="card card--elevated">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="alunoSelect" class="form-label">Aluno</label>
+                    <select id="alunoSelect" class="form-control" onchange="carregarRelatorio()">
+                        <option value="">Selecione um aluno</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="periodoSelect" class="form-label">Período</label>
+                    <select id="periodoSelect" class="form-control" onchange="carregarRelatorio()">
+                        <option value="30">Últimos 30 dias</option>
+                        <option value="60">Últimos 60 dias</option>
+                        <option value="90" selected>Últimos 90 dias</option>
+                        <option value="180">Últimos 180 dias</option>
+                        <option value="365">Último ano</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div id="mensagemSelecao" class="message message--info">
+                <p>Selecione um aluno para visualizar o relatório de progresso</p>
+            </div>
+        </div>
+
+        <!-- Conteúdo do Relatório (Oculto inicialmente) -->
+        <div id="relatorioContent" style="display: none;">
+            <!-- Resumo de Progresso -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Resumo de Progresso</h3>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-box__label">Variação de Peso</div>
+                        <div class="stat-box__number" id="variacaoPeso">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box__label">Variação % Gordura</div>
+                        <div class="stat-box__number" id="variacaoGordura">-</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-box__label">IMC Atual</div>
+                        <div class="stat-box__number" id="imcAtual">-</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráfico de Evolução de Peso -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Evolução de Peso (kg)</h3>
+                <div class="chart-container">
+                    <canvas id="graficoP peso"></canvas>
+                </div>
+            </div>
+
+            <!-- Gráfico de Evolução % Gordura -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Evolução % Gordura</h3>
+                <div class="chart-container">
+                    <canvas id="graficoGordura"></canvas>
+                </div>
+            </div>
+
+            <!-- Evolução de Circunferências -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Evolução de Circunferências (cm)</h3>
+                <div class="chart-container">
+                    <canvas id="graficoCircunferencias"></canvas>
+                </div>
+            </div>
+
+            <!-- Tabela de Medidas -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Histórico de Medidas</h3>
+                <div class="table-wrapper">
+                    <table class="table" id="historicoMedidasTable">
+                        <thead class="table__head">
+                            <tr>
+                                <th class="table__header-cell">Data</th>
+                                <th class="table__header-cell">Peso (kg)</th>
+                                <th class="table__header-cell">% Gordura</th>
+                                <th class="table__header-cell">Peito (cm)</th>
+                                <th class="table__header-cell">Cintura (cm)</th>
+                                <th class="table__header-cell">Braço (cm)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="historicoMedidasBody">
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="emptyState" class="empty-state d-none">
+                    <p>Nenhuma medida encontrada para este período</p>
+                </div>
+            </div>
+
+            <!-- Observações e Recomendações -->
+            <div class="card card--elevated">
+                <h3 class="card__title">Observações e Recomendações</h3>
+                <div id="observacoesRelatorio">
+                    <p>-</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/professor-relatorios.js}"></script>
+</body>
+</html>

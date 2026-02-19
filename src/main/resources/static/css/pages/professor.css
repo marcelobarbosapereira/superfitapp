@@ -1,0 +1,222 @@
+/* ===== ESTILOS DA DASHBOARD DO PROFESSOR ===== */
+
+/* Seção de formulários */
+.form-section-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-dark, #2c3e50);
+    margin: 1.5rem 0 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border-light, #e0e0e0);
+}
+
+/* Item de exercício */
+.exercicio-item {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    background-color: var(--bg-light, #f8f9fa);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #e0e0e0);
+}
+
+.exercicio-item .form-row {
+    gap: 1rem;
+}
+
+.exercicio-item .btn--danger {
+    margin-top: 1.5rem;
+}
+
+/* Container de gráficos */
+.chart-container {
+    padding: 1.5rem;
+    background-color: var(--bg-white, #ffffff);
+    border-radius: 8px;
+    border: 1px solid var(--border-light, #e0e0e0);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.chart-container canvas {
+    max-height: 300px;
+}
+
+/* Seções do card */
+.card__section {
+    padding: 1.5rem 0;
+    border-top: 1px solid var(--border-light, #e0e0e0);
+}
+
+.card__section:first-child {
+    border-top: none;
+    padding-top: 0;
+}
+
+.card__description {
+    color: var(--text-muted, #6c757d);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+/* Stats boxes com unidades */
+.stat-box__unit {
+    font-size: 0.875rem;
+    color: var(--text-muted, #6c757d);
+    margin-top: 0.25rem;
+}
+
+/* Grupo de botões */
+.btn-group {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: flex-end;
+}
+
+/* Utilitárias de espaçamento */
+.mt-sm {
+    margin-top: 0.5rem;
+}
+
+.mt-md {
+    margin-top: 1rem;
+}
+
+.mt-lg {
+    margin-top: 2rem;
+}
+
+.d-none {
+    display: none !important;
+}
+
+/* Tabela responsiva */
+.table-wrapper {
+    overflow-x: auto;
+    margin-top: 1rem;
+}
+
+/* Ações da tabela */
+.table__actions {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+/* Empty states */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--text-muted, #6c757d);
+    font-size: 1rem;
+}
+
+/* Menu grid melhorado */
+.menu-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.menu-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 2rem 1.5rem;
+    background-color: var(--bg-white, #ffffff);
+    border: 2px solid var(--border-light, #e0e0e0);
+    border-radius: 12px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.menu-item:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color, #3498db);
+}
+
+.menu-item__icon {
+    font-size: 3rem;
+    margin-bottom: 1rem;
+}
+
+.menu-item__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-dark, #2c3e50);
+}
+
+.menu-item__description {
+    font-size: 0.875rem;
+    color: var(--text-muted, #6c757d);
+    margin: 0;
+}
+
+/* Stats melhorado */
+.stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin: 2rem 0;
+}
+
+.stat-box {
+    background-color: var(--bg-white, #ffffff);
+    padding: 1.5rem;
+    border-radius: 12px;
+    border: 1px solid var(--border-light, #e0e0e0);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    text-align: center;
+    transition: transform 0.3s ease;
+}
+
+.stat-box:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.stat-box__label {
+    font-size: 0.875rem;
+    color: var(--text-muted, #6c757d);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-box__number {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--primary-color, #3498db);
+}
+
+/* Responsividade */
+@media (max-width: 768px) {
+    .menu-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .chart-container {
+        padding: 1rem;
+    }
+
+    .btn-group {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .table__actions {
+        flex-direction: column;
+    }
+
+    .exercicio-item .form-row {
+        flex-direction: column;
+    }
+}

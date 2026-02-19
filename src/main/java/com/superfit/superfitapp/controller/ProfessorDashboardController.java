@@ -21,4 +21,28 @@ public class ProfessorDashboardController {
     public String dashboard(Model model) {
         return "professor-dashboard";
     }
+
+    /**
+     * Página de gerenciamento de treinos do professor.
+     */
+    @GetMapping("/treinos")
+    public String treinos(Model model) {
+        return "professor-treinos";
+    }
+
+    /**
+     * Página de registro de medidas do professor.
+     */
+    @GetMapping("/medidas")
+    public String medidas(Model model) {
+        return "professor-medidas";
+    }
+
+    /**
+     * Página de relatórios de progresso do professor.
+     */
+    @GetMapping("/relatorios")
+    public String relatorios(Model model) {
+        return "professor-relatorios";
+    }
 }

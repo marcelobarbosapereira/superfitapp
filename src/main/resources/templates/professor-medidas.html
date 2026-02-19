@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro de Medidas - Professor - SuperFit App</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+    <link rel="stylesheet" th:href="@{/css/pages/professor.css}">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <h1 class="navbar__brand">🏋️ SuperFit App - Professor</h1>
+        <div class="navbar__menu">
+            <a href="/professor/dashboard" class="navbar__link">Home</a>
+            <a href="/professor/treinos" class="navbar__link">Treinos</a>
+            <a href="/professor/medidas" class="navbar__link">Medidas</a>
+            <a href="/professor/relatorios" class="navbar__link">Relatórios</a>
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- Header -->
+        <div class="card card--elevated">
+            <div class="card__header">
+                <h2 class="card__title">Registro de Medidas</h2>
+            </div>
+        </div>
+
+        <!-- Formulário Registro de Medidas -->
+        <div class="card card--elevated">
+            <form id="formRegistroMedidas" class="form">
+                <!-- Aluno e Data -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="aluno" class="form-label">Aluno</label>
+                        <select id="aluno" name="alunoId" class="form-control" required>
+                            <option value="">Selecione um aluno</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="data" class="form-label">Data</label>
+                        <input type="date" id="data" name="data" class="form-control" required>
+                    </div>
+                </div>
+
+                <!-- Peso e Altura -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="peso" class="form-label">Peso (kg)</label>
+                        <input type="number" id="peso" name="peso" class="form-control" 
+                               placeholder="Ex: 75.5" step="0.1" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="altura" class="form-label">Altura (cm)</label>
+                        <input type="number" id="altura" name="altura" class="form-control" 
+                               placeholder="Ex: 175" step="0.1" required>
+                    </div>
+                </div>
+
+                <!-- Gordura e Circunferências -->
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="percentualGordura" class="form-label">% Gordura</label>
+                        <input type="number" id="percentualGordura" name="percentualGordura" 
+                               class="form-control" placeholder="Ex: 18.5" step="0.1">
+                    </div>
+                </div>
+
+                <!-- Circunferências (cm) -->
+                <div class="card__section">
+                    <h4 class="form-section-title">Circunferências (cm)</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="peito" class="form-label">Peito</label>
+                            <input type="number" id="peito" name="peito" class="form-control" 
+                                   placeholder="Ex: 95" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cintura" class="form-label">Cintura</label>
+                            <input type="number" id="cintura" name="cintura" class="form-control" 
+                                   placeholder="Ex: 85" step="0.1">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="quadril" class="form-label">Quadril</label>
+                            <input type="number" id="quadril" name="quadril" class="form-control" 
+                                   placeholder="Ex: 95" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Braços -->
+                <div class="card__section">
+                    <h4 class="form-section-title">Braços (cm)</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="bracoDireito" class="form-label">Braço Direito</label>
+                            <input type="number" id="bracoDireito" name="bracoDireito" 
+                                   class="form-control" placeholder="Ex: 35" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="bracoEsquerdo" class="form-label">Braço Esquerdo</label>
+                            <input type="number" id="bracoEsquerdo" name="bracoEsquerdo" 
+                                   class="form-control" placeholder="Ex: 35" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Coxas -->
+                <div class="card__section">
+                    <h4 class="form-section-title">Coxas (cm)</h4>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="coxaDireita" class="form-label">Coxa Direita</label>
+                            <input type="number" id="coxaDireita" name="coxaDireita" 
+                                   class="form-control" placeholder="Ex: 55" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="coxaEsquerda" class="form-label">Coxa Esquerda</label>
+                            <input type="number" id="coxaEsquerda" name="coxaEsquerda" 
+                                   class="form-control" placeholder="Ex: 55" step="0.1">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Observações -->
+                <div class="form-group">
+                    <label for="observacoes" class="form-label">Observações</label>
+                    <textarea id="observacoes" name="observacoes" class="form-control" 
+                              placeholder="Observação sobre as medidas..." rows="3"></textarea>
+                </div>
+
+                <!-- Botão Registrar -->
+                <div class="form-actions" style="margin-top: 2rem;">
+                    <button type="submit" class="btn btn--primary">Registrar Medidas</button>
+                </div>
+            </form>
+
+            <div id="medidaMessage" class="message" style="margin-top: 1rem;"></div>
+        </div>
+
+        <!-- Últimas Medidas Registradas -->
+        <div class="card card--elevated">
+            <h3 class="card__title">Últimas Medidas Registradas</h3>
+            
+            <div class="table-wrapper">
+                <table class="table" id="medidasTable">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Aluno</th>
+                            <th class="table__header-cell">Data</th>
+                            <th class="table__header-cell">Peso (kg)</th>
+                            <th class="table__header-cell">% Gordura</th>
+                            <th class="table__header-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="medidasBody">
+                    </tbody>
+                </table>
+            </div>
+
+            <div id="emptyState" class="empty-state d-none">
+                <p>Nenhuma medida registrada ainda</p>
+            </div>
+        </div>
+    </div>
+
+    <script th:src="@{/js/utils/helpers.js}"></script>
+    <script th:src="@{/js/professor-medidas.js}"></script>
+</body>
+</html>
