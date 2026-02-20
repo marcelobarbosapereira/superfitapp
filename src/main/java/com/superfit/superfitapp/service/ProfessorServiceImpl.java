@@ -3,10 +3,13 @@ package com.superfit.superfitapp.service;
 import com.superfit.superfitapp.dto.professor.ProfessorCreateDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorResponseDTO;
 import com.superfit.superfitapp.dto.professor.ProfessorUpdateDTO;
+import com.superfit.superfitapp.dto.aluno.AlunoResponseDTO;
 import com.superfit.superfitapp.model.Professor;
+import com.superfit.superfitapp.model.Aluno;
 import com.superfit.superfitapp.model.Role;
 import com.superfit.superfitapp.model.User;
 import com.superfit.superfitapp.repository.ProfessorRepository;
+import com.superfit.superfitapp.repository.AlunoRepository;
 import com.superfit.superfitapp.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -25,11 +28,13 @@ public class ProfessorServiceImpl implements ProfessorService {
 
     private final ProfessorRepository professorRepository;
     private final UserRepository userRepository;
+    private final AlunoRepository alunoRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public ProfessorServiceImpl(ProfessorRepository professorRepository, UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public ProfessorServiceImpl(ProfessorRepository professorRepository, UserRepository userRepository, AlunoRepository alunoRepository, PasswordEncoder passwordEncoder) {
         this.professorRepository = professorRepository;
         this.userRepository = userRepository;
+        this.alunoRepository = alunoRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -163,6 +168,26 @@ public class ProfessorServiceImpl implements ProfessorService {
             throw new RuntimeException("Professor não encontrado");
         }
         professorRepository.deleteById(Objects.requireNonNull(id, "id"));
+    }*
+     * Lista todos os alunos vinculados ao professor autenticado.
+     * Busca o professor pelo email no token JWT e retorna seus alunos.
+     * 
+     * @return Lista de DTOs com os alunos do professor
+     */
+    @Override
+    public List<AlunoResponseDTO> listarMeusAlunos() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Professor professor = professorRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Professor não encontrado"));
+
+        List<Aluno> alunos = alunoRepository.findByProfessorId(professor.getId());
+
+        return alunos.stream()
+                .map(this::toAlunoResponseDTO)
+                .collect(Collectors.toList());
     }
 
     /* =======================
@@ -185,6 +210,30 @@ public class ProfessorServiceImpl implements ProfessorService {
                 professor.getId(),
                 professor.getNome(),
                 email,
+                professor.getTelefone(),
+                professor.getCrefi()
+        );
+    }
+
+    /**
+     * Converte a entidade Aluno em DTO de resposta.
+     * 
+     * @param aluno Entidade Aluno a ser convertida
+     * @return DTO com os dados do aluno formatados para resposta
+     */
+    private AlunoResponseDTO toAlunoResponseDTO(Aluno aluno) {
+        String email = aluno.getUser() != null
+                ? aluno.getUser().getEmail()
+                : aluno.getEmail();
+
+        return new AlunoResponseDTO(
+                aluno.getId(),
+                aluno.getNome(),
+                email,
+                aluno.getTelefone(),
+                aluno.getDataNascimento(),
+                aluno.getAtivo(),
+                aluno.getProfessor() != null ? aluno.getProfessor().getId() : null
                 professor.getTelefone(),
                 professor.getCrefi()
         );

@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
  * Carrega lista de alunos do professor
  */
 function loadAlunos() {
-    fetch('/api/professor/alunos')
+    fetch('/api/professores/alunos', { credentials: 'include' })
         .then(response => {
             if (!response.ok) throw new Error('Erro ao buscar alunos');
             return response.json();

@@ -61,4 +61,12 @@ public interface ProfessorService {
 	 * @throws RuntimeException se o professor não for encontrado
 	 */
 	void remover(Long id);
+
+	/**
+	 * Lista todos os alunos vinculados ao professor autenticado.
+	 * Extrai o email do professor do token JWT e busca seus alunos.
+	 * 
+	 * @return Lista de DTOs com os alunos do professor
+	 */
+	List<com.superfit.superfitapp.dto.aluno.AlunoResponseDTO> listarMeusAlunos();
 }

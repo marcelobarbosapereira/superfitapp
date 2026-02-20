@@ -57,7 +57,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const payload = {
                 nome: document.getElementById('editAlunoNome').value.trim(),
                 email: document.getElementById('editAlunoEmail').value.trim(),
-                telefone: document.getElementById('editAlunoTelefone').value.trim()
+                telefone: document.getElementById('editAlunoTelefone').value.trim(),
+                ativo: true  // Mantém o aluno ativo ao editar
             };
 
             // Adiciona senha apenas se foi preenchida

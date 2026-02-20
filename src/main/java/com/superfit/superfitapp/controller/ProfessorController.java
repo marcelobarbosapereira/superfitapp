@@ -112,5 +112,17 @@ public class ProfessorController {
         professorService.remover(id);
         return ResponseEntity.noContent().build();
     }
+
+    /**
+     * Lista todos os alunos vinculados ao professor autenticado.
+     * Acesso restrito: apenas PROFESSOR.
+     * 
+     * @return ResponseEntity com lista de alunos do professor
+     */
+    @GetMapping("/alunos")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<List<com.superfit.superfitapp.dto.aluno.AlunoResponseDTO>> listarMeusAlunos() {
+        return ResponseEntity.ok(professorService.listarMeusAlunos());
+    }
 }
 
