@@ -54,6 +54,11 @@ logging:
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} - %msg%n"
 
+# Application Configuration
+app:
+  cookie:
+    secure: true  # Cookie seguro para HTTPS em produção
+
 # Actuator (Health checks)
 management:
   endpoints:

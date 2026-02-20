@@ -85,25 +85,32 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     try {
         String token = null;
+        String tokenSource = "none";
 
         // Tentar obter o token do header Authorization
         String authHeader = request.getHeader("Authorization");
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
+            tokenSource = "Authorization header";
         } 
         // Se não encontrar no header, tentar obter do cookie
         else if (request.getCookies() != null) {
             for (jakarta.servlet.http.Cookie cookie : request.getCookies()) {
                 if ("jwtToken".equals(cookie.getName())) {
                     token = cookie.getValue();
+                    tokenSource = "Cookie";
                     break;
                 }
             }
         }
 
+        System.out.println("🔐 [JWT Filter] Path: " + request.getServletPath() + " | Token source: " + tokenSource);
+
         if (token != null && !token.isEmpty() && jwtService.isTokenValid(token)) {
             String email = jwtService.extractEmail(token);
             String role = jwtService.extractRole(token);
+
+            System.out.println("✅ [JWT Filter] Token válido | Email: " + email + " | Role: " + role);
 
             if (email != null && role != null &&
                 SecurityContextHolder.getContext().getAuthentication() == null) {
@@ -123,10 +130,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 );
 
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+                System.out.println("✅ [JWT Filter] Autenticação configurada com sucesso | Authority: " + role);
             }
+        } else if (token != null) {
+            System.out.println("❌ [JWT Filter] Token inválido ou expirado");
         }
     } catch (Exception e) {
-        System.err.println("Erro ao processar JWT: " + e.getMessage());
+        System.err.println("❌ [JWT Filter] Erro ao processar JWT: " + e.getMessage());
         e.printStackTrace();
     }
 

@@ -4,6 +4,7 @@ import com.superfit.superfitapp.dto.LoginRequest;
 import com.superfit.superfitapp.dto.LoginResponse;
 import com.superfit.superfitapp.service.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
@@ -23,6 +24,9 @@ public class AuthController {
     @Autowired
     private AuthService authService;
 
+    @Value("${app.cookie.secure:false}")
+    private boolean cookieSecure;
+
     /**
      * Endpoint de autenticação de usuários.
      * 
@@ -34,7 +38,7 @@ public class AuthController {
      * 
      * Configurações do cookie:
      * - httpOnly: true (não acessível via JavaScript)
-     * - secure: false (mudar para true em produção com HTTPS)
+     * - secure: configurável via application.properties (true em produção HTTPS)
      * - maxAge: 24 horas
      * - sameSite: Lax (proteção contra CSRF)
      * 
@@ -50,11 +54,13 @@ public class AuthController {
             "Token não pode ser nulo"
         );
 
+        System.out.println("🔐 [Auth] Login bem-sucedido | Cookie Secure: " + cookieSecure);
+
         // Criar um cookie seguro com o token JWT
         ResponseCookie cookie = ResponseCookie
                 .from("jwtToken", token)
                 .httpOnly(true)
-                .secure(false) // Mudar para true em produção com HTTPS
+                .secure(cookieSecure) // Configurável: true em produção HTTPS
                 .path("/")
                 .maxAge(24 * 60 * 60) // 24 horas
                 .sameSite("Lax")

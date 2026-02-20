@@ -61,7 +61,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     localStorage.setItem('jwtToken', token);
 
                     // Fallback: gravar cookie no browser para navegação de páginas
-                    document.cookie = `jwtToken=${encodeURIComponent(token)}; path=/; max-age=86400; SameSite=Lax`;
+                    // Adicionar Secure para HTTPS (produção)
+                    const isSecure = window.location.protocol === 'https:' ? '; Secure' : '';
+                    document.cookie = `jwtToken=${encodeURIComponent(token)}; path=/; max-age=86400; SameSite=Lax${isSecure}`;
 
                     responseMessage.style.display = 'block';
                     responseMessage.className = 'login__message login__message--success login__message--show';
