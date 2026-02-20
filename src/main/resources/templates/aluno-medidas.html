@@ -28,106 +28,36 @@
             </div>
         </div>
 
-        <!-- Seletor de Período -->
-        <div class="card card--elevated">
-            <h3 class="card__title">Selecione o Período</h3>
-            
-            <div class="periodo-selector">
-                <!-- Mês Atual -->
-                <div class="periodo-group">
-                    <label for="mesAtual" class="form-label">Mês Atual</label>
-                    <select id="mesAtual" class="form-control" onchange="carregarMedidas()">
-                        <option value="">Selecione um mês</option>
-                    </select>
-                </div>
+        <!-- Medida Mais Recente -->
+        <div id="medidaRecenteCard" class="card card--elevated" style="display: none;">
+            <h3 class="card__title">Medida Mais Recente</h3>
+            <div id="medidaRecenteContent"></div>
+        </div>
 
-                <!-- Ano -->
-                <div class="periodo-group">
-                    <label for="ano" class="form-label">Ano</label>
-                    <select id="ano" class="form-control" onchange="carregarMedidas()">
-                        <option value="">Selecione um ano</option>
-                    </select>
-                </div>
-
-                <!-- Período Anterior -->
-                <div class="periodo-group">
-                    <label class="form-label">Períodos Anteriores</label>
-                    <div id="periodosAnteriores" class="periodos-grid">
-                        <!-- Será preenchido dinamicamente -->
-                    </div>
-                </div>
-            </div>
-
-            <div id="mensagemSelecao" class="message message--info">
-                <p>Selecione um mês para visualizar suas medidas</p>
+        <!-- Últimas 3 Medidas -->
+        <div id="ultimasMedidasCard" class="card card--elevated" style="display: none;">
+            <h3 class="card__title">Últimas Medidas Registradas</h3>
+            <div class="table-wrapper">
+                <table class="table" id="ultimasMedidasTable">
+                    <thead class="table__head">
+                        <tr>
+                            <th class="table__header-cell">Data</th>
+                            <th class="table__header-cell">Peso (kg)</th>
+                            <th class="table__header-cell">% Gordura</th>
+                            <th class="table__header-cell">IMC</th>
+                            <th class="table__header-cell">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="ultimasMedidasBody">
+                    </tbody>
+                </table>
             </div>
         </div>
 
-        <!-- Tabela de Medidas -->
-        <div id="medidasContent" style="display: none;">
-            <div class="card card--elevated">
-                <h3 class="card__title" id="tituloMedidas">Medidas</h3>
-
-                <!-- Resumo -->
-                <div class="stats" style="margin-bottom: 2rem;">
-                    <div class="stat-box">
-                        <div class="stat-box__label">Peso (kg)</div>
-                        <div class="stat-box__number" id="pesoAtual">-</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-box__label">% Gordura</div>
-                        <div class="stat-box__number" id="gorduraAtual">-</div>
-                    </div>
-                    <div class="stat-box">
-                        <div class="stat-box__label">IMC</div>
-                        <div class="stat-box__number" id="imcAtual">-</div>
-                    </div>
-                </div>
-
-                <!-- Tabela Principal -->
-                <div class="table-wrapper">
-                    <table class="table" id="medidasTable">
-                        <thead class="table__head">
-                            <tr>
-                                <th class="table__header-cell">Data</th>
-                                <th class="table__header-cell">Peso (kg)</th>
-                                <th class="table__header-cell">Altura (cm)</th>
-                                <th class="table__header-cell">% Gordura</th>
-                                <th class="table__header-cell">Peito (cm)</th>
-                                <th class="table__header-cell">Cintura (cm)</th>
-                                <th class="table__header-cell">Quadril (cm)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="medidasBody">
-                        </tbody>
-                    </table>
-                </div>
-
-                <div id="emptyState" class="empty-state d-none">
-                    <p>Nenhuma medida registrada para este período</p>
-                </div>
-            </div>
-
-            <!-- Tabela Expandida -->
-            <div class="card card--elevated">
-                <h3 class="card__title">Detalhes Completos</h3>
-                
-                <div class="table-wrapper">
-                    <table class="table" id="medidasExpandidaTable">
-                        <thead class="table__head">
-                            <tr>
-                                <th class="table__header-cell">Data</th>
-                                <th class="table__header-cell">Braço D (cm)</th>
-                                <th class="table__header-cell">Braço E (cm)</th>
-                                <th class="table__header-cell">Coxa D (cm)</th>
-                                <th class="table__header-cell">Coxa E (cm)</th>
-                                <th class="table__header-cell">Observações</th>
-                            </tr>
-                        </thead>
-                        <tbody id="medidasExpandidaBody">
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Mensagem quando não há medidas -->
+        <div id="semMedidasMsg" class="card card--elevated" style="display: none;">
+            <div class="message message--info">
+                <p>Nenhuma medida registrada ainda. Aguarde seu professor registrar suas medidas.</p>
             </div>
         </div>
     </div>

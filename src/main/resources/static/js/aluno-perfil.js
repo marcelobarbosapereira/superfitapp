@@ -7,6 +7,8 @@ document.addEventListener('DOMContentLoaded', () => {
     configurarFormularioSenha();
 });
 
+let dadosPerfilAtual = null;
+
 /**
  * Carrega os dados do perfil do aluno
  */
@@ -17,6 +19,7 @@ function carregarPerfil() {
             return response.json();
         })
         .then(dados => {
+            dadosPerfilAtual = dados;
             document.getElementById('nomePerfil').textContent = dados.nome || '-';
             document.getElementById('emailPerfil').textContent = dados.email || '-';
             document.getElementById('telefonePerfil').textContent = dados.telefone || '-';
@@ -31,6 +34,89 @@ function carregarPerfil() {
             console.error('Erro:', error);
             showMessage('senhaMessage', '❌ Erro ao carregar perfil', 'error');
         });
+}
+
+/**
+ * Ativa o modo de edição do perfil
+ */
+function ativarEdicaoPerfil() {
+    // Esconde os textos e mostra os inputs
+    document.getElementById('nomePerfil').style.display = 'none';
+    document.getElementById('nomePerfilEdit').style.display = 'block';
+    document.getElementById('nomePerfilEdit').value = dadosPerfilAtual.nome || '';
+    
+    document.getElementById('telefonePerfil').style.display = 'none';
+    document.getElementById('telefonePerfilEdit').style.display = 'block';
+    document.getElementById('telefonePerfilEdit').value = dadosPerfilAtual.telefone || '';
+    
+    // Mostra botões de ação e esconde botão de editar
+    document.getElementById('botoesEdicao').style.display = 'flex';
+    document.getElementById('btnEditarPerfil').style.display = 'none';
+}
+
+/**
+ * Cancela a edição e volta ao modo visualização
+ */
+function cancelarEdicaoPerfil() {
+    // Mostra os textos e esconde os inputs
+    document.getElementById('nomePerfil').style.display = 'block';
+    document.getElementById('nomePerfilEdit').style.display = 'none';
+    
+    document.getElementById('telefonePerfil').style.display = 'block';
+    document.getElementById('telefonePerfilEdit').style.display = 'none';
+    
+    // Esconde botões de ação e mostra botão de editar
+    document.getElementById('botoesEdicao').style.display = 'none';
+    document.getElementById('btnEditarPerfil').style.display = 'block';
+    
+    // Limpa mensagens
+    document.getElementById('perfilMessage').innerHTML = '';
+}
+
+/**
+ * Salva as alterações do perfil
+ */
+function salvarPerfil() {
+    const novoNome = document.getElementById('nomePerfilEdit').value.trim();
+    const novoTelefone = document.getElementById('telefonePerfilEdit').value.trim();
+    
+    if (!novoNome) {
+        showMessage('perfilMessage', '❌ O nome não pode estar vazio', 'error');
+        return;
+    }
+    
+    const dadosAtualizados = {
+        nome: novoNome,
+        telefone: novoTelefone
+    };
+    
+    fetch(`/api/alunos/${dadosPerfilAtual.id}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(dadosAtualizados)
+    })
+    .then(response => {
+        if (!response.ok) throw new Error('Erro ao atualizar perfil');
+        return response.json();
+    })
+    .then(dados => {
+        dadosPerfilAtual = dados;
+        document.getElementById('nomePerfil').textContent = dados.nome || '-';
+        document.getElementById('telefonePerfil').textContent = dados.telefone || '-';
+        
+        showMessage('perfilMessage', '✅ Perfil atualizado com sucesso!', 'success');
+        
+        // Volta ao modo visualização
+        setTimeout(() => {
+            cancelarEdicaoPerfil();
+        }, 1500);
+    })
+    .catch(error => {
+        console.error('Erro:', error);
+        showMessage('perfilMessage', '❌ Erro ao atualizar perfil', 'error');
+    });
 }
 
 /**

@@ -150,17 +150,6 @@ public class MensalidadeController {
      */
     @GetMapping("/aluno/{alunoId}/pendentes/count")
     @PreAuthorize("hasAnyRole('ADMIN','GESTOR') or hasRole('ALUNO')")
-    public ResponseEntity<Long> contarPendentesPorAluno(@PathVariable Long alunoId) {
-        List<MensalidadeResponseDTO> pendentes = mensalidadeService.listarPorAlunoEStatus(alunoId, StatusMensalidade.PENDENTE);
-        return ResponseEntity.ok((long) pendentes.size());
-    }
-
-    /**
-     * Endpoint legado para contagem de pendentes
-     * Acesso: ADMIN / GESTOR / ALUNO (suas próprias)
-     */
-    @GetMapping("/aluno/{alunoId}/pendentes/count")
-    @PreAuthorize("hasAnyRole('ADMIN','GESTOR') or hasRole('ALUNO')")
     public ResponseEntity<Long> countPendentesPorAluno(
             @PathVariable Long alunoId
     ) {

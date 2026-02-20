@@ -94,7 +94,12 @@
 
         <!-- Treinos Recentes -->
         <div class="card card--elevated">
-            <h3 class="card__title">Treinos Recentes</h3>
+            <div class="card__header" style="display: flex; justify-content: space-between; align-items: center;">
+                <h3 class="card__title">Treinos Recentes</h3>
+                <button type="button" class="btn btn--info btn--sm" onclick="loadTreinosRecentes()" title="Atualizar treinos">
+                    🔄 Atualizar
+                </button>
+            </div>
             <div id="treinosMessage" class="message"></div>
             
             <div class="table-wrapper">

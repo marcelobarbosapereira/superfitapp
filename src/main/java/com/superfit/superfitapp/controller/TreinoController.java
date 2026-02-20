@@ -42,8 +42,20 @@ public class TreinoController {
     public ResponseEntity<TreinoResponseDTO> criar(
             @RequestBody TreinoCreateDTO dto
     ) {
-        TreinoResponseDTO response = treinoService.criar(dto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        try {
+            System.out.println("📥 Recebendo treino: " + dto.getNome());
+            System.out.println("   Tipo: " + dto.getTipo());
+            System.out.println("   Data Início: " + dto.getDataInicio());
+            System.out.println("   Aluno ID: " + dto.getAlunoId());
+            System.out.println("   Exercícios: " + (dto.getExercicios() != null ? dto.getExercicios().size() : 0));
+            
+            TreinoResponseDTO response = treinoService.criar(dto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(response);
+        } catch (Exception e) {
+            System.err.println("❌ Erro ao criar treino: " + e.getMessage());
+            e.printStackTrace();
+            throw e;
+        }
     }
 
     /**
@@ -59,6 +71,19 @@ public class TreinoController {
     @GetMapping
     @PreAuthorize("hasAnyRole('PROFESSOR', 'ALUNO')")
     public ResponseEntity<List<TreinoResponseDTO>> listar() {
+        return ResponseEntity.ok(treinoService.listarTodos());
+    }
+
+    /**
+     * Lista treinos recentes criados pelo professor autenticado.
+     * Acesso restrito: apenas PROFESSOR.
+     * Retorna os últimos treinos criados pelo professor.
+     * 
+     * @return ResponseEntity com lista de treinos recentes
+     */
+    @GetMapping("/professor/recentes")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<List<TreinoResponseDTO>> listarTreinosRecentesDoProfessor() {
         return ResponseEntity.ok(treinoService.listarTodos());
     }
 

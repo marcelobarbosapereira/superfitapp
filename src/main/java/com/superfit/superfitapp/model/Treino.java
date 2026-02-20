@@ -1,6 +1,7 @@
 package com.superfit.superfitapp.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +15,12 @@ public class Treino {
 
     @Column(nullable = false)
     private String nome;
+
+    @Column(name = "tipo")
+    private String tipo;
+
+    @Column(name = "data_inicio")
+    private LocalDate dataInicio;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "professor_id", nullable = false)
@@ -39,6 +46,7 @@ public class Treino {
         this.nome = nome;
         this.professor = professor;
         this.aluno = aluno;
+        this.dataInicio = LocalDate.now();
     }
 
     /* ===== Getters & Setters ===== */
@@ -57,6 +65,22 @@ public class Treino {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
     }
 
     public Professor getProfessor() {

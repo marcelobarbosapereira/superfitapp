@@ -168,7 +168,9 @@ public class ProfessorServiceImpl implements ProfessorService {
             throw new RuntimeException("Professor não encontrado");
         }
         professorRepository.deleteById(Objects.requireNonNull(id, "id"));
-    }*
+    }
+
+    /**
      * Lista todos os alunos vinculados ao professor autenticado.
      * Busca o professor pelo email no token JWT e retorna seus alunos.
      * 
@@ -231,11 +233,9 @@ public class ProfessorServiceImpl implements ProfessorService {
                 aluno.getNome(),
                 email,
                 aluno.getTelefone(),
-                aluno.getDataNascimento(),
                 aluno.getAtivo(),
-                aluno.getProfessor() != null ? aluno.getProfessor().getId() : null
-                professor.getTelefone(),
-                professor.getCrefi()
+                aluno.getProfessor() != null ? aluno.getProfessor().getId() : null,
+                aluno.getProfessor() != null ? aluno.getProfessor().getNome() : null
         );
     }
 }

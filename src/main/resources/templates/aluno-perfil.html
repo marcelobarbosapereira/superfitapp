@@ -45,9 +45,15 @@
 
                 <!-- Informações Pessoais -->
                 <div class="info-pessoal">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                        <h3 style="margin: 0; color: #333;">Informações Pessoais</h3>
+                        <button id="btnEditarPerfil" class="btn btn--sm" style="background: none; border: none; font-size: 1.5rem; cursor: pointer; padding: 0.5rem;" title="Editar informações" onclick="ativarEdicaoPerfil()">✏️</button>
+                    </div>
+                    
                     <div class="info-item">
                         <label class="info-label">Nome</label>
                         <p id="nomePerfil" class="info-value">-</p>
+                        <input type="text" id="nomePerfilEdit" class="form-control" style="display: none;">
                     </div>
                     <div class="info-item">
                         <label class="info-label">Email</label>
@@ -56,11 +62,18 @@
                     <div class="info-item">
                         <label class="info-label">Telefone</label>
                         <p id="telefonePerfil" class="info-value">-</p>
+                        <input type="tel" id="telefonePerfilEdit" class="form-control" style="display: none;" placeholder="(00) 00000-0000">
                     </div>
                     <div class="info-item">
                         <label class="info-label">Data de Ingresso</label>
                         <p id="dataIngresso" class="info-value">-</p>
                     </div>
+                    
+                    <div id="botoesEdicao" style="display: none; margin-top: 1rem; gap: 0.5rem;">
+                        <button class="btn btn--primary" onclick="salvarPerfil()">Salvar</button>
+                        <button class="btn btn--secondary" onclick="cancelarEdicaoPerfil()">Cancelar</button>
+                    </div>
+                    <div id="perfilMessage" class="message" style="margin-top: 1rem;"></div>
                 </div>
             </div>
         </div>

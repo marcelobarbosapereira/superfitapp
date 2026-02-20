@@ -1,11 +1,14 @@
 package com.superfit.superfitapp.dto.treino;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public class TreinoResponseDTO {
 
     private Long id;
     private String nome;
+    private String tipo;
+    private LocalDate dataInicio;
     private Long professorId;
     private String professorNome;
     private Long alunoId;
@@ -15,9 +18,11 @@ public class TreinoResponseDTO {
     public TreinoResponseDTO() {
     }
 
-    public TreinoResponseDTO(Long id, String nome, Long professorId, String professorNome, Long alunoId, String alunoNome, List<ExercicioDTO> exercicios) {
+    public TreinoResponseDTO(Long id, String nome, String tipo, LocalDate dataInicio, Long professorId, String professorNome, Long alunoId, String alunoNome, List<ExercicioDTO> exercicios) {
         this.id = id;
         this.nome = nome;
+        this.tipo = tipo;
+        this.dataInicio = dataInicio;
         this.professorId = professorId;
         this.professorNome = professorNome;
         this.alunoId = alunoId;
@@ -39,6 +44,22 @@ public class TreinoResponseDTO {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(String tipo) {
+        this.tipo = tipo;
+    }
+
+    public LocalDate getDataInicio() {
+        return dataInicio;
+    }
+
+    public void setDataInicio(LocalDate dataInicio) {
+        this.dataInicio = dataInicio;
     }
 
     public Long getProfessorId() {

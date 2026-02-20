@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -99,6 +100,8 @@ public class TreinoServiceImpl implements TreinoService {
 
         Treino treino = new Treino();
         treino.setNome(dto.getNome());
+        treino.setTipo(dto.getTipo());
+        treino.setDataInicio(dto.getDataInicio() != null ? dto.getDataInicio() : LocalDate.now());
         treino.setProfessor(professor);
         treino.setAluno(aluno);
 
@@ -190,6 +193,7 @@ public class TreinoServiceImpl implements TreinoService {
         ).orElseThrow(() -> new RuntimeException("Treino não encontrado"));
 
         treino.setNome(dto.getNome());
+        treino.setTipo(dto.getTipo());
 
         // Remover exercícios antigos
         treino.getExercicios().clear();
@@ -249,6 +253,8 @@ public class TreinoServiceImpl implements TreinoService {
         return new TreinoResponseDTO(
                 treino.getId(),
                 treino.getNome(),
+                treino.getTipo(),
+                treino.getDataInicio(),
                 treino.getProfessor().getId(),
                 treino.getProfessor().getNome(),
                 treino.getAluno().getId(),

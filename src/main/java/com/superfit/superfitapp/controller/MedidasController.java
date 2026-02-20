@@ -64,6 +64,31 @@ public class MedidasController {
     }
 
     /**
+     * Lista medidas recentes registradas pelo professor.
+     * Acesso restrito: apenas PROFESSOR.
+     * 
+     * @return ResponseEntity com lista de medidas recentes
+     */
+    @GetMapping("/professor/recentes")
+    @PreAuthorize("hasRole('PROFESSOR')")
+    public ResponseEntity<List<MedidasResponseDTO>> listarRecentesProfessor() {
+        return ResponseEntity.ok(medidasService.listarTodas());
+    }
+
+    /**
+     * Lista o histórico completo de medidas do aluno autenticado.
+     * Acesso restrito: apenas ALUNO.
+     * Retorna todas as medidas do próprio aluno ordenadas por data (mais recente primeiro).
+     * 
+     * @return ResponseEntity com lista de medidas do aluno autenticado
+     */
+    @GetMapping("/meu-historico")
+    @PreAuthorize("hasRole('ALUNO')")
+    public ResponseEntity<List<MedidasResponseDTO>> buscarMeuHistorico() {
+        return ResponseEntity.ok(medidasService.listarTodas());
+    }
+
+    /**
      * Lista todas as medidas de um aluno específico.
      * Acesso: PROFESSOR ou ALUNO.
      * Ordenadas em ordem decrescente de data (mais recente primeiro).

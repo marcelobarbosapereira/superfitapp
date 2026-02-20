@@ -2,14 +2,15 @@
 
 document.addEventListener('DOMContentLoaded', () => {
     // Carrega todos os relatórios ao carregar a página
-    carregarReceitaMensal();
+    carregarBalancoMensal();
+    carregarDespesasMensais();
     carregarAlunosAtivos();
     carregarInadimplencia();
     carregarProfessores();
 });
 
-async function carregarReceitaMensal() {
-    const container = document.getElementById('receitaMensalContainer');
+async function carregarBalancoMensal() {
+    const container = document.getElementById('balancoMensalContainer');
     if (!container) return;
 
     try {
@@ -50,7 +51,54 @@ async function carregarReceitaMensal() {
             </div>
         `;
     } catch (error) {
-        console.error('Erro ao carregar receita mensal:', error);
+        console.error('Erro ao carregar balanço mensal:', error);
+        container.innerHTML = '<p style="color: #d32f2f;">Erro ao carregar dados.</p>';
+    }
+}
+
+async function carregarDespesasMensais() {
+    const container = document.getElementById('despesasMensaisContainer');
+    if (!container) return;
+
+    try {
+        const response = await fetch('/api/relatorios/despesas-mensais', { credentials: 'include' });
+        if (!response.ok) throw new Error(`Status ${response.status}`);
+        
+        const data = await response.json();
+        
+        container.innerHTML = `
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="stat-card" style="padding: 1rem; background: #ffebee; border-radius: 8px;">
+                    <div style="font-size: 0.85rem; color: #c62828; font-weight: 600;">Despesas Pagas</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #b71c1c; margin-top: 0.5rem;">R$ ${data.despesasPagas.toFixed(2)}</div>
+                </div>
+                <div class="stat-card" style="padding: 1rem; background: #fff3e0; border-radius: 8px;">
+                    <div style="font-size: 0.85rem; color: #e65100; font-weight: 600;">Despesas Pendentes</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #bf360c; margin-top: 0.5rem;">R$ ${data.despesasPendentes.toFixed(2)}</div>
+                </div>
+                <div class="stat-card" style="padding: 1rem; background: #fce4ec; border-radius: 8px;">
+                    <div style="font-size: 0.85rem; color: #ad1457; font-weight: 600;">Total Previsto</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #880e4f; margin-top: 0.5rem;">R$ ${data.despesasTotal.toFixed(2)}</div>
+                </div>
+                <div class="stat-card" style="padding: 1rem; background: #f3e5f5; border-radius: 8px;">
+                    <div style="font-size: 0.85rem; color: #6a1b9a; font-weight: 600;">Taxa de Pagamento</div>
+                    <div style="font-size: 1.5rem; font-weight: 700; color: #4a148c; margin-top: 0.5rem;">${data.taxaPagamento.toFixed(1)}%</div>
+                </div>
+            </div>
+            <div style="margin-top: 1rem; display: flex; gap: 2rem; flex-wrap: wrap;">
+                <div>
+                    <span style="font-weight: 600;">Total de Despesas:</span> ${data.totalDespesas}
+                </div>
+                <div>
+                    <span style="font-weight: 600;">Pagas:</span> <span style="color: #c62828;">${data.totalPagas}</span>
+                </div>
+                <div>
+                    <span style="font-weight: 600;">Pendentes:</span> <span style="color: #e65100;">${data.totalPendentes}</span>
+                </div>
+            </div>
+        `;
+    } catch (error) {
+        console.error('Erro ao carregar despesas mensais:', error);
         container.innerHTML = '<p style="color: #d32f2f;">Erro ao carregar dados.</p>';
     }
 }

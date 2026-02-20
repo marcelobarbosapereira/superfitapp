@@ -54,6 +54,14 @@ public interface AlunoService {
     AlunoResponseDTO buscarPorId(Long id);
 
     /**
+     * Busca o perfil do aluno autenticado no token JWT.
+     * 
+     * @return DTO com os dados do aluno autenticado
+     * @throws RuntimeException se o aluno não for encontrado
+     */
+    AlunoResponseDTO buscarMeuPerfil();
+
+    /**
      * Atualiza os dados de um aluno existente.
      * 
      * @param id ID do aluno a ser atualizado

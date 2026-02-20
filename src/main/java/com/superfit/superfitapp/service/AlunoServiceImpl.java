@@ -145,6 +145,25 @@ public class AlunoServiceImpl implements AlunoService {
     }
 
     /**
+     * Busca o perfil do aluno autenticado no token JWT.
+     * Obtém o email do contexto de segurança e busca o aluno correspondente.
+     * 
+     * @return DTO com os dados do aluno autenticado
+     * @throws RuntimeException se o aluno não for encontrado
+     */
+    @Override
+    public AlunoResponseDTO buscarMeuPerfil() {
+        String email = SecurityContextHolder.getContext()
+                .getAuthentication()
+                .getName();
+
+        Aluno aluno = alunoRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Aluno não encontrado"));
+
+        return toResponseDTO(aluno);
+    }
+
+    /**
      * Atualiza os dados de um aluno existente.
      * Busca o aluno por ID, atualiza os campos permitidos (nome, telefone, ativo) e persiste.
      * 

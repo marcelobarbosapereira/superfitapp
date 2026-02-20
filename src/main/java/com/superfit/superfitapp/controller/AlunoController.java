@@ -129,6 +129,18 @@ public class AlunoController {
     }
 
     /**
+     * Busca o perfil do aluno autenticado.
+     * Acesso restrito: apenas ALUNO.
+     * 
+     * @return ResponseEntity com dados do perfil do aluno autenticado
+     */
+    @GetMapping("/meu-perfil")
+    @PreAuthorize("hasRole('ALUNO')")
+    public ResponseEntity<AlunoResponseDTO> buscarMeuPerfil() {
+        return ResponseEntity.ok(alunoService.buscarMeuPerfil());
+    }
+
+    /**
      * Lista todos os treinos do aluno autenticado.
      * Acesso restrito: apenas ALUNO.
      * 

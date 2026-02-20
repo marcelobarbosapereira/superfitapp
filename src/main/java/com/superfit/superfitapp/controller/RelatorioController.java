@@ -2,6 +2,7 @@ package com.superfit.superfitapp.controller;
 
 import com.superfit.superfitapp.model.StatusMensalidade;
 import com.superfit.superfitapp.repository.AlunoRepository;
+import com.superfit.superfitapp.repository.DespesaRepository;
 import com.superfit.superfitapp.repository.MensalidadeRepository;
 import com.superfit.superfitapp.repository.ProfessorRepository;
 import com.superfit.superfitapp.service.DespesaService;
@@ -24,13 +25,16 @@ public class RelatorioController {
     private final MensalidadeRepository mensalidadeRepository;
     private final AlunoRepository alunoRepository;
     private final ProfessorRepository professorRepository;
+    private final DespesaRepository despesaRepository;
 
     public RelatorioController(DespesaService despesaService, MensalidadeRepository mensalidadeRepository,
-                              AlunoRepository alunoRepository, ProfessorRepository professorRepository) {
+                              AlunoRepository alunoRepository, ProfessorRepository professorRepository,
+                              DespesaRepository despesaRepository) {
         this.despesaService = despesaService;
         this.mensalidadeRepository = mensalidadeRepository;
         this.alunoRepository = alunoRepository;
         this.professorRepository = professorRepository;
+        this.despesaRepository = despesaRepository;
     }
 
     /**
@@ -308,6 +312,50 @@ public class RelatorioController {
         relatorio.put("receitaPrevista", receitaPrevista);
         relatorio.put("receitaPendente", receitaPendente);
         relatorio.put("taxaAdimplencia", totalMensalidades > 0 ? (totalPagas * 100.0 / totalMensalidades) : 0);
+        
+        return ResponseEntity.ok(relatorio);
+    }
+
+    /**
+     * Relatório de Despesas Mensais Simplificado
+     * Acesso: ADMIN / GESTOR
+     */
+    @GetMapping("/despesas-mensais")
+    @PreAuthorize("hasAnyRole('ADMIN','GESTOR')")
+    public ResponseEntity<Map<String, Object>> despesasMensais() {
+        Map<String, Object> relatorio = new HashMap<>();
+        
+        // Total de despesas
+        long totalDespesas = despesaRepository.count();
+        
+        // Despesas pagas
+        long totalPagas = despesaRepository.findByPaga(true).size();
+        
+        // Despesas pendentes
+        long totalPendentes = despesaRepository.findByPaga(false).size();
+        
+        // Total de despesas pagas
+        double despesasPagas = despesaRepository.findByPaga(true).stream()
+                .mapToDouble(d -> d.getValor())
+                .sum();
+        
+        // Total de despesas previstas
+        double despesasTotal = despesaRepository.findAll().stream()
+                .mapToDouble(d -> d.getValor())
+                .sum();
+        
+        // Total de despesas pendentes
+        double despesasPendentes = despesaRepository.findByPaga(false).stream()
+                .mapToDouble(d -> d.getValor())
+                .sum();
+        
+        relatorio.put("totalDespesas", totalDespesas);
+        relatorio.put("totalPagas", totalPagas);
+        relatorio.put("totalPendentes", totalPendentes);
+        relatorio.put("despesasPagas", despesasPagas);
+        relatorio.put("despesasTotal", despesasTotal);
+        relatorio.put("despesasPendentes", despesasPendentes);
+        relatorio.put("taxaPagamento", totalDespesas > 0 ? (totalPagas * 100.0 / totalDespesas) : 0);
         
         return ResponseEntity.ok(relatorio);
     }
