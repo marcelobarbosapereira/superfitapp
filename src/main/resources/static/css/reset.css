@@ -10,6 +10,8 @@ html {
     font-size: var(--font-size-base);
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    /* Improve text rendering */
+    text-rendering: optimizeLegibility;
 }
 
 body {
@@ -18,6 +20,10 @@ body {
     line-height: var(--line-height-normal);
     color: var(--color-gray-800);
     background-color: var(--color-gray-100);
+    /* Prevent overscroll on mobile */
+    overscroll-behavior-y: none;
+    /* Improve font sizing on iOS */
+    -webkit-text-size-adjust: 100%;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -41,6 +47,12 @@ a {
     color: var(--color-primary);
     text-decoration: none;
     transition: color var(--transition-base);
+    /* Better touch feedback */
+    -webkit-touch-callout: none;
+}
+
+a:active {
+    opacity: 0.7;
 }
 
 a:hover {
@@ -100,4 +112,15 @@ img {
     max-width: 100%;
     height: auto;
     display: block;
+}
+
+/* Mobile optimization */
+@media (max-width: var(--breakpoint-md)) {
+    html {
+        font-size: 16px; /* Prevent iOS zoom on form focus */
+    }
+    
+    h1 { font-size: var(--font-size-3xl); }
+    h2 { font-size: var(--font-size-2xl); }
+    h3 { font-size: var(--font-size-xl); }
 }

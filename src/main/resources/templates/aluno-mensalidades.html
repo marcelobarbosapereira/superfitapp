@@ -306,11 +306,16 @@
 <body>
     <nav class="navbar">
         <h1>🏋️ SuperFit App</h1>
-        <div class="user-menu">
+        <button class="navbar__toggle" aria-label="Abrir Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="user-menu navbar__menu">
             <a href="/aluno/dashboard">Home</a>
             <a href="/aluno/treinos">Meus Treinos</a>
             <a href="/aluno/medidas">Minhas Medidas</a>
-            <a href="/logout" class="logout-btn">Sair</a>
+            <a href="/logout" class="logout-btn navbar__button">Sair</a>
         </div>
     </nav>
 

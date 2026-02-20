@@ -22,6 +22,10 @@
     font-size: var(--font-size-base);
     font-family: inherit;
     transition: border-color var(--transition-base), box-shadow var(--transition-base);
+    -webkit-appearance: none;
+    appearance: none;
+    /* Minimum height for touch */
+    min-height: 44px;
 }
 
 .form-group__input:focus,
@@ -34,7 +38,8 @@
 
 .form-group__textarea {
     resize: vertical;
-    min-height: 6rem;
+    min-height: 120px;
+    padding: var(--spacing-md);
 }
 
 .form-row {
@@ -72,10 +77,47 @@
     margin-top: var(--spacing-sm);
 }
 
+/* Select dropdown icon */
+.form-group__select {
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right var(--spacing-md) center;
+    background-size: 20px;
+    padding-right: var(--spacing-2xl);
+}
+
 /* Responsive */
 @media (max-width: var(--breakpoint-md)) {
+    .form-group {
+        margin-bottom: var(--spacing-md);
+    }
+
     .form-row,
     .form-row--3 {
         grid-template-columns: 1fr;
+        gap: var(--spacing-md);
+    }
+    
+    .form-group__input,
+    .form-group__textarea,
+    .form-group__select {
+        font-size: 16px; /* Prevents zoom on focus for iOS */
+        padding: var(--spacing-md);
+    }
+    
+    .form-group__textarea {
+        min-height: 100px;
+    }
+}
+
+@media (max-width: 480px) {
+    .form-group {
+        margin-bottom: var(--spacing-sm);
+    }
+    
+    .form-group__input,
+    .form-group__textarea,
+    .form-group__select {
+        font-size: 16px;
     }
 }

@@ -9,6 +9,11 @@
 <body>
     <nav class="navbar">
         <h1 class="navbar__brand">SuperFit App - Gestor</h1>
+        <button class="navbar__toggle" aria-label="Abrir Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
         <div class="navbar__menu">
             <a href="/gestor/dashboard" class="navbar__link">Home</a>
             <a href="/gestor/alunos" class="navbar__link">Alunos</a>
@@ -79,6 +84,7 @@
         </div>
     </div>
 
+    <script th:src="@{/js/mobile-nav.js}"></script>
     <script th:src="@{/js/gestor-relatorios.js}"></script>
 </body>
 </html>

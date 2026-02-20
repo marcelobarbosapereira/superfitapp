@@ -86,6 +86,11 @@
     overflow: auto;
 }
 
+.overflow-x-auto {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
 .text-truncate {
     overflow: hidden;
     text-overflow: ellipsis;
@@ -104,4 +109,60 @@
 
 .opacity-100 {
     opacity: 1;
+}
+
+/* ===== TOUCH-FRIENDLY SIZE ===== */
+
+.touch-target {
+    min-width: 44px;
+    min-height: 44px;
+}
+
+.touch-target--large {
+    min-width: 48px;
+    min-height: 48px;
+}
+
+/* ===== MOBILE UTILITIES ===== */
+
+@media (max-width: var(--breakpoint-md)) {
+    .hide-on-mobile {
+        display: none !important;
+    }
+    
+    .full-width-mobile {
+        width: 100% !important;
+    }
+    
+    .flex-column-mobile {
+        flex-direction: column;
+    }
+    
+    .text-sm-mobile {
+        font-size: var(--font-size-sm);
+    }
+    
+    .p-md-mobile {
+        padding: var(--spacing-md) !important;
+    }
+    
+    .p-lg-mobile {
+        padding: var(--spacing-lg) !important;
+    }
+}
+
+/* ===== SMALL SCREENS (480px) ===== */
+
+@media (max-width: 480px) {
+    .hide-on-small {
+        display: none !important;
+    }
+    
+    .text-xs-small {
+        font-size: var(--font-size-xs);
+    }
+    
+    .gap-sm-small {
+        gap: var(--spacing-sm) !important;
+    }
 }

@@ -11,10 +11,14 @@
     font-size: var(--font-size-base);
     text-decoration: none;
     text-align: center;
-    min-height: 2.5rem;
+    min-height: 44px;
     display: flex;
     align-items: center;
     justify-content: center;
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent;
 }
 
 /* ===== VARIANTES ===== */

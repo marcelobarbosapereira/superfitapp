@@ -10,7 +10,14 @@
     <!-- Navbar -->
     <nav class="navbar">
         <h1 class="navbar__brand">SuperFit App - Admin</h1>
-        <button class="navbar__button" onclick="logout()">Sair</button>
+        <button class="navbar__toggle" aria-label="Abrir Menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+        <div class="navbar__menu">
+            <a href="/logout" class="navbar__link navbar__button">Sair</a>
+        </div>
     </nav>
 
     <div class="container">
@@ -114,6 +121,7 @@
 
     <script th:src="@{/js/utils/helpers.js}"></script>
     <script th:src="@{/js/utils/interceptor.js}"></script>
+    <script th:src="@{/js/mobile-nav.js}"></script>
     <script th:src="@{/js/admin.js}"></script>
 </body>
 </html>

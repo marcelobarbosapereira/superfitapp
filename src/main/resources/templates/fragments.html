@@ -8,6 +8,11 @@
 <!-- ===== NAVBAR ===== -->
 <nav class="navbar" th:fragment="navbar(title)">
     <h1 class="navbar__brand" th:text="${title}">SuperFit App</h1>
+    <button class="navbar__toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+    </button>
     <div class="navbar__menu">
         <a href="/aluno/dashboard" class="navbar__link">Home</a>
         <a href="/aluno/mensalidades" class="navbar__link">Mensalidades</a>
